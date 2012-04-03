@@ -1,10 +1,10 @@
 name    'puppet-mediawiki'
 version '0.0.1'
-source 'UNKNOWN'
-author 'puppet'
-license 'UNKNOWN'
-summary 'UNKNOWN'
-description 'UNKNOWN'
+source 'git@github.com:martasd/puppet-mediawiki.git'
+author 'Martin Dluhos'
+license 'GPLv3'
+summary 'Install mediawiki'
+description 'Deploy and manage multiple mediawiki instances using only one installation.'
 project_page 'UNKNOWN'
 
 ## Add dependencies, if any:

@@ -1,3 +1,11 @@
-mediawiki
+# Mediawiki module for Puppet
 
-This is the mediawiki module.
+## Description
+
+This module deploys and manages multiple mediawiki instances using one mediawiki installation. This module is designed for Enterprise Linux, Ubuntu, and Debian.
+
+## Usage
+
+Installs the mediawiki package  
+
+  class { 'mediawiki': }
