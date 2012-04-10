@@ -1,0 +1,6 @@
+# Do not include emacs backup and temporary files
+*~
+#*
+
+# Do not include vim's swap files
+*.swp
