@@ -31,7 +31,7 @@ class mediawiki (
   ) {
 
   package { 'mediawiki':
-    name => $mediawiki::params::package_name,
+    name   => $mediawiki::params::package_name,
     ensure => $package_ensure,
   }
 
@@ -39,7 +39,7 @@ class mediawiki (
 
   class { 'mediawiki::php': }
   
-  class { 'mediawiki::mysql_server': }
+  class { 'mediawiki::mysql-server': }
 
   file { 'wikis':
     path    => '${mediawiki_root}/wikis',
