@@ -30,7 +30,7 @@ class mediawiki::apache (
   service { 'apache':
     name    => $mediawiki::params::apache_service,
     ensure  => running,
-    enable = true,
+    enable => true,
     hasrestart => true,
     hasstatus => true,
     require => Package['apache'],
