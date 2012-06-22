@@ -8,12 +8,12 @@ This module deploys and manages multiple mediawiki instances using one mediawiki
 
 Installs the mediawiki package:
 
-mediawiki { 'my_wiki1':
-  $db_root_password = 'really_long_password',
-  $db_name          = 'wiki1_user',
-  $db_password      = 'another_really_long_password',
-  $max_memory       = 1024,
-  }
+    mediawiki { 'my_wiki1':
+      $db_root_password = 'really_long_password',
+      $db_name          = 'wiki1_user',
+      $db_password      = 'another_really_long_password',
+      $max_memory       = 1024,
+      }
 
 ## Reference
 
