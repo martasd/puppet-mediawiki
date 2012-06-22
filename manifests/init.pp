@@ -1,97 +1,65 @@
-# Class: mediawiki
+# == Define: mediawiki
 #
-# This module manages mediawiki.
+# This module manages a multi-tenant mediawiki installation.
 #
-# Parameters:
+# === Parameters:
 #
-# [*package_ensure*]
-# [*admin*]
-# [*servername*]
-# [*serveralias*]
-# [*db_name*]
-# [*db_user*]
-# [*db_password*]
-# [*memory*]
-# [*ip*]
-# [*port*]
+# [*package_ensure*]   - state of the package
+# [*db_root_password*] - password for mysql root user
+# [*db_name*]          - name of the mediawiki instance mysql database
+# [*db_user*]          - name of the mysql database user
+# [*db_password*]      - password for the mysql database user
+# [*max_memory*]       - a memcached memory limit
 #
-# Actions:
+# === Examples:
 #
-# Requires:
+# mediawiki { 'my_wiki1':
+#   $db_root_password = 'really_long_password',
+#   $db_name          = 'wiki1_user',
+#   $db_password      = 'another_really_long_password',
+#   $max_memory       = 1024,
+#   }
 #
-# Sample Usage:
+# === Authors:
 #
-class mediawiki (
-    $package_ensure = 'latest',
-    $admin,
-    $servername = $name,
-    $serveralias = $name,
-    $db_name = $name,
-    $db_user = 'mediawiki',
-    $db_password = 'mediawiki',
-    $memory = 2048,
-    $ip,
-    $port = 80) {
+# Martin Dluhos <martin@gnu.org>
+#
+# === Copyright:
+#
+# Copyright 2012 Martin Dluhos
+#
+define mediawiki (
+  $db_root_password,
+  $db_password,
+  $db_name           = $name,
+  $db_user           = 'mediawiki_user',
+  $max_memory        = 2048
+  ) {
 
-  package { 'mediawiki':
-    name => $mediawiki::params::package_name,
-    ensure => $package_ensure,
+  include mediawiki::setup
+
+  # NOTE: Need to prevent conflicts by using the same name
+  class { 'apache': }
+
+  # Manages the mysql server package and service by default
+  # NOTE: Need to put a portion of this class into setup
+  class { 'mysql::server':
+    # I do not like the config hash below very much- ask about that
+    config_hash => { 'root_password' => $db_root_password }
   }
 
-  # ghoneycutt's apache module needs to be extended and improved
-  class { 'apache:php': }
-
-  class { 'mysql::server': }
-
-  # Create a MySQL database
-  mysql::db  { $db_name:
-    user => $db_user,
-         password => $db_password,
-         host => $::hostname
+  mysql::db { $db_name:
+    user     => $db_user,
+    password => $db_password,
+    host     => 'localhost',
+    grant    => ['all'],
   }
 
+  # Figure out how to improve db security (manually done by
+  # mysql_secure_installation)
 
-  class { 'memcached': 
-    max_memory => $memory
-  }
+  # Include optional packages (see mediawiki_ubuntu.txt)
 
-  class { 'authconfig': }
-
-
-  file { 'wikis':
-            path    => '${mediawiki_root}/wikis',
-            owner   => 'root',
-            group   => 'root',
-            ensure  => directory,
-            mode    => 0755,
-            require => Package['mediawiki'];
-  }
-
-  file { 'mywiki':
-            path    => '${mediawiki_root}/wikis/${name}',
-            owner   => 'root',
-            group   => 'root',
-            ensure  => directory,
-            mode    => 0755,
-            require => File['wikis'];
-  }
-
-  file { 'skins':
-            path    => '${mediawiki_root}/wikis/${name}/skins',
-            owner   => 'www-data',
-            group   => 'www-data',
-            ensure  => directory,
-            mode    => 0755,
-            require => File['mywiki'];
-  }
-
-  file { 'config_file':
-            path    => '${mediawiki_root}/wikis/${name}/index.php',
-            owner   => 'www-data',
-            group   => 'www-data',
-            content => template('index.php.erb'),
-            mode    => 0755;
-  }
-
-  # Add other files and directories
+  # Capture further configuration done through manually through GUI and the
+  # filesystem
 }
