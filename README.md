@@ -17,4 +17,6 @@ Installs the mediawiki package:
 
 ## Reference
 
-This module is based on puppet-mediawiki by carlasouza available at https://github.com/carlasouza/puppet-mediawiki.
+This module is based on puppet-mediawiki by carlasouza available at
+https://github.com/carlasouza/puppet-mediawiki. Others who contributed to this
+module include James Turnbull and Zach Leslie.

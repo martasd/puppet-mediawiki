@@ -1,29 +1,33 @@
-# Class: mediawiki::params
+# === Class: mediawiki::params
 #
-#  The mediawiki configuration settings.
+#  The mediawiki configuration settings idiosyncratic to different operating
+#  systems.
 #
-# Parameters:
+# === Parameters
 #
-#  None
+# None
 #
-# Actions:
+# === Examples
 #
-# Requires:
+# None
 #
-# Sample Usage:
+# === Authors
+#
+# Martin Dluhos <martin@gnu.org>
+#
+# === Copyright
+#
+# Copyright 2012 Martin Dluhos
+#
 class mediawiki::params {
 
   case $::operatingsystem {
     redhat: {
-      $package_name = 'mediawiki'
-      $mediawiki_root = '/var/www/html'
     }
     debian: {
-      $package_name = 'mediawiki'
-      $mediawiki_root = '/var/lib/mediawiki'
     }
     ubuntu: {
-      $package_name = 'mediawiki'
+      $packages = ['php', 'php5-mysql', 'mediawiki', 'mediawiki-extensions']
       $mediawiki_root = '/var/lib/mediawiki'
     }
     default: {

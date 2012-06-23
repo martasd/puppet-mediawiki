@@ -1,65 +1,58 @@
-# == Define: mediawiki
+# Class: mediawiki
 #
-# This module manages a multi-tenant mediawiki installation.
+# This class includes all resources regarding installation and configuration
+# that needs to be performed exactly once and is therefore not mediawiki
+# instance specific.
 #
-# === Parameters:
+# === Parameters
 #
-# [*package_ensure*]   - state of the package
 # [*db_root_password*] - password for mysql root user
-# [*db_name*]          - name of the mediawiki instance mysql database
-# [*db_user*]          - name of the mysql database user
-# [*db_password*]      - password for the mysql database user
+# [*package_ensure*]   - state of the package
 # [*max_memory*]       - a memcached memory limit
 #
-# === Examples:
+# === Examples
 #
-# mediawiki { 'my_wiki1':
-#   $db_root_password = 'really_long_password',
-#   $db_name          = 'wiki1_user',
-#   $db_password      = 'another_really_long_password',
-#   $max_memory       = 1024,
-#   }
+# class { 'mediawiki':
+#   db_root_password = 'really_really_long_password',
+#   max_memory       = '1024'
+# }
 #
-# === Authors:
+# mediawiki::instance { 'my_wiki1':
+#   db_name     = 'wiki1_user',
+#   db_password = 'really_long_password',
+# }
+#
+## === Authors
 #
 # Martin Dluhos <martin@gnu.org>
 #
-# === Copyright:
+# === Copyright
 #
 # Copyright 2012 Martin Dluhos
 #
-define mediawiki (
+class mediawiki (
   $db_root_password,
-  $db_password,
-  $db_name           = $name,
-  $db_user           = 'mediawiki_user',
-  $max_memory        = 2048
+  $package_ensure = 'latest',
+  $max_memory     = '2048'
   ) {
 
-  include mediawiki::setup
+  include apache
+  include mediawiki::params
 
-  # NOTE: Need to prevent conflicts by using the same name
-  class { 'apache': }
+  package { $mediawiki::params::packages:
+    ensure => $package_ensure,
+  }
 
   # Manages the mysql server package and service by default
-  # NOTE: Need to put a portion of this class into setup
   class { 'mysql::server':
-    # I do not like the config hash below very much- ask about that
-    config_hash => { 'root_password' => $db_root_password }
+    config_hash => { 'root_password' => $db_root_password },
   }
 
-  mysql::db { $db_name:
-    user     => $db_user,
-    password => $db_password,
-    host     => 'localhost',
-    grant    => ['all'],
+  class { 'memcached':
+    max_memory => $max_memory,
   }
-
-  # Figure out how to improve db security (manually done by
-  # mysql_secure_installation)
 
   # Include optional packages (see mediawiki_ubuntu.txt)
 
-  # Capture further configuration done through manually through GUI and the
-  # filesystem
+  # Make sure the directories and files common for all instances are correct
 }
