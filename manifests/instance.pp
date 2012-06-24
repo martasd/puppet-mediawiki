@@ -34,6 +34,8 @@ define mediawiki::instance (
   $db_user = 'mediawiki_user'
   ) {
 
+  include mediawiki::params
+
   # mediawiki needs to be installed before a particular instance is created
   Class['mediawiki'] -> Mediawiki::Instance[$name]
 
@@ -50,5 +52,61 @@ define mediawiki::instance (
   # mysql_secure_installation)
 
   # Capture further configuration done through manually through GUI and the
-  # filesystem
+  # filesystem specific to an instance
+  file { "${mediawiki::params::conf_dir}/${name}":
+    ensure   => directory,
+    owner    => 'root',
+    group    => 'root',
+    mode     => '0755',
+    require  => File['configuration_dir'],
+  }
+
+  # Mediawiki configuration file for this instance
+  file { "${mediawiki::params::conf_dir}/${name}/LocalSettings.php":
+    owner    => 'www-data',
+    group    => 'www-data',
+    content  => template('mediawiki/LocalSettings.php.erb'),
+    mode     => '0700',
+    require  => File["${mediawiki::params::conf_dir}/${name}"],
+  }
+
+  # Each instance needs a separate folder to upload images
+  file { "${mediawiki::params::conf_dir}/${name}/images":
+    ensure   => directory,
+    owner    => 'root',
+    group    => 'www-data',
+    mode     => '0664',
+    require  => File["${mediawiki::params::conf_dir}/${name}"],
+  }
+
+  file { "${mediawiki::params::conf_dir}/${name}/${installation_files}":
+    ensure   => link,
+    owner    => 'root',
+    group    => 'root',
+    mode     => '0755',
+    require  => File["${mediawiki::params::conf_dir}/${name}"],
+  }
+
+  # Ensure a directory for Apache vhost
+  file { "${mediawiki::params::apache_dir}/${name}":
+    ensure   => link,
+    owner    => 'root',
+    group    => 'root',
+    target   => "${mediawiki::params::conf_dir}/${name}",
+  }
+
+  # Each instance has a separate vhost file
+  file { "/etc/apache2/sites-available/${name}_vhost":
+    owner    => 'www-data',
+    group    => 'www-data',
+    content  => template('/mediawiki/instance_vhost.erb'),
+    require  => File["${mediawiki::params::apache_dir}/${name}"],
+  }
+
+  file { "/etc/apache2/sites-enabled/${name}_vhost":
+    ensure   => link,
+    owner    => 'www-data',
+    group    => 'www-data',
+    target   => File["/etc/apache2/sites-available/${name}_vhost"],
+  }
 }

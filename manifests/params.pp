@@ -28,7 +28,14 @@ class mediawiki::params {
     }
     ubuntu: {
       $packages = ['php', 'php5-mysql', 'mediawiki', 'mediawiki-extensions']
-      $mediawiki_root = '/var/lib/mediawiki'
+      $conf_dir = '/etc/mediawiki'
+      $apache_dir = '/var/lib/mediawiki'
+      $installation_files = ['api.php', 'config', 'extensions', 'img_auth.php',
+                             'includes', 'index.php', 'install-utils.inc',
+                             'languages', 'maintenance', 'opensearch_desc.php',
+                             'profileinfo.php', 'redirect.php',
+                             'redirect.phtml', 'skins', 'StartProfiler.php',
+                             'thumb.php', 'trackback.php', 'wiki.phtml']
     }
     default: {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")

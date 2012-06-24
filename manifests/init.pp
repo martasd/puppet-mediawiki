@@ -54,5 +54,12 @@ class mediawiki (
 
   # Include optional packages (see mediawiki_ubuntu.txt)
 
-  # Make sure the directories and files common for all instances are correct
+  # Make sure the directories and files common for all instances are included
+  file { $mediawiki::params::conf_dir:
+    ensure  => directory,
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    require => Package['mediawiki'],
+  }
 }
