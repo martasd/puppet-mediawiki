@@ -58,8 +58,7 @@ define mediawiki::instance (
       # Figure out how to improve db security (manually done by
       # mysql_secure_installation)
 
-      # Capture further configuration done through manually through GUI and the
-      # filesystem specific to an instance
+      # Specify the state of files which make up the wiki instance
       file { "${mediawiki::params::conf_dir}/${name}":
         ensure   => directory,
         owner    => 'root',
@@ -86,7 +85,8 @@ define mediawiki::instance (
         require  => File["${mediawiki::params::conf_dir}/${name}"],
       }
 
-      file { "${mediawiki::params::conf_dir}/${name}/${installation_files}":
+      file { "${mediawiki::params::conf_dir}\
+              /${name}/${mediawki::params::installation_files}":
         ensure   => link,
         owner    => 'root',
         group    => 'root',
@@ -108,6 +108,7 @@ define mediawiki::instance (
         group    => 'www-data',
         content  => template('/mediawiki/instance_vhost.erb'),
         require  => File["${mediawiki::params::apache_dir}/${name}"],
+        notify   => Service[$mediawiki::params::apache],
       }
     }
 
@@ -120,16 +121,45 @@ define mediawiki::instance (
         target   => File["/etc/apache2/sites-available/${name}_vhost"],
       }
 
-      # Start Apache if it is not running
+      service: { $mediawiki::params::apache:
+        ensure     => 'running',
+        hasstatus  => true,
+        hasrestart => true,
+        enable     => true,
+        require    => File["/etc/apache2/sites-enabled/${name}_vhost"],
+      }
     }
 
     disabled: {
 
-      # Disable Apache if it is enabled
+      file { "/etc/apache2/sites-enabled/${name}_vhost":
+        ensure   => absent,
+        owner    => 'www-data',
+        group    => 'www-data',
+      }
+
+      service: { $mediawiki::params::apache:
+        ensure     => 'stopped',
+        hasstatus  => true,
+        hasrestart => true,
+        enable     => false,
+      }
     }
 
     absent: {
 
       # Remove the instance if it is present
+      file { "${mediawiki::params::conf_dir}/${name}":
+        ensure  => absent,
+        recurse => true,
+      }
+
+      file { "/etc/apache2/sites-available/${name}_vhost":
+        ensure  => absent,
+      }
+
+      # Delete the mysql database
+      # NOTE: Need to fix puppet-mysql to allow to specify the option
     }
+  }
 }
