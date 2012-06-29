@@ -9,7 +9,7 @@
 	     ServerName localhost
 	     ServerAlias *.localhost
 
-	     <Directory /var/lib/mediawiki/<%= name%>>
+	     <Directory <%= name%>>
 	     		Options +FollowSymLinks
 	     		AllowOverride All
 	     		order allow,deny
