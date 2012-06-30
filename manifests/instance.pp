@@ -18,8 +18,9 @@
 # }
 #
 # mediawiki::instance { 'my_wiki1':
-#   db_name     = 'wiki1_user',
 #   db_password = 'really_long_password',
+#   db_name     = 'wiki1',
+#   db_user     = 'wiki1_user',
 #   status      = 'present'
 # }
 #
@@ -34,7 +35,7 @@
 define mediawiki::instance (
   $db_password,
   $db_name = $name,
-  $db_user = 'mediawiki_user',
+  $db_user = 'wiki1_user',
   $status = 'present'
   ) {
 
