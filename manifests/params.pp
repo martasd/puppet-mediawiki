@@ -27,7 +27,7 @@ class mediawiki::params {
     debian: {
     }
     ubuntu: {
-      $packages = ['php', 'php5-mysql', 'mediawiki', 'mediawiki-extensions']
+      $packages = ['php5', 'php5-mysql', 'mediawiki', 'mediawiki-extensions']
       $conf_dir = '/etc/mediawiki'
       $apache_dir = '/var/lib/mediawiki'
       $apache_daemon = '/usr/sbin/apache2'
