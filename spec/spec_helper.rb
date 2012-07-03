@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(dir, dir + 'lib', dir + '../lib')
 
 require 'mocha'
 require 'puppet'
-gem 'rspec', '=1.2.9'
+gem 'rspec' #, '=1.2.9'
 require 'spec/autorun'
 
 Spec::Runner.configure do |config|
