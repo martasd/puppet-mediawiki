@@ -1,14 +1,14 @@
 # == Define: mediawiki::instance
 #
-# This module manages a multi-tenant mediawiki installation.
+# This defined type allows the user to create a mediawiki instance.
 #
 # === Parameters
 #
-# [*db_name*]          - name of the mediawiki instance mysql database
-# [*db_user*]          - name of the mysql database user
-# [*db_password*]      - password for the mysql database user
-# [*status*]           - the current status of the wiki instance
-#                      - options: present, enabled, disabled, absent
+# [*db_name*]     - name of the mediawiki instance mysql database
+# [*db_user*]     - name of the mysql database user
+# [*db_password*] - password for the mysql database user
+# [*status*]      - the current status of the wiki instance
+#                 - options: present, enabled, disabled, absent
 #
 # === Examples
 #
@@ -41,6 +41,12 @@ define mediawiki::instance (
 
   include mediawiki::params
 
+  # Make the configuration file more readable
+  $mediawiki_conf_dir      = $mediawiki::params::conf_dir
+  $mediawiki_install_files = $mediawiki::params::installation_files
+  $instance_root_dir       = $mediawiki::params::instance_root_dir
+  $apache_daemon           = $mediawiki::params::apache_daemon
+
   case $status {
     present, default: {
 
@@ -59,8 +65,8 @@ define mediawiki::instance (
       # Figure out how to improve db security (manually done by
       # mysql_secure_installation)
 
-      # Specify the state of files which make up the wiki instance
-      file { "${mediawiki::params::conf_dir}/${name}":
+      # Directory for this wiki instance
+      file { "${mediawiki_conf_dir}/${name}":
         ensure   => directory,
         owner    => 'root',
         group    => 'root',
@@ -69,38 +75,34 @@ define mediawiki::instance (
       }
 
       # Mediawiki configuration file for this instance
-      file { "${mediawiki::params::conf_dir}/${name}/LocalSettings.php":
+      file { "${mediawiki_conf_dir}/${name}/LocalSettings.php":
         owner    => 'www-data',
         group    => 'www-data',
         content  => template('mediawiki/LocalSettings.php.erb'),
         mode     => '0700',
-        require  => File["${mediawiki::params::conf_dir}/${name}"],
+        require  => File["${mediawiki_conf_dir}/${name}"],
       }
 
       # Each instance needs a separate folder to upload images
-      file { "${mediawiki::params::conf_dir}/${name}/images":
+      file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        owner    => 'root',
+        owner    => 'www-data',
         group    => 'www-data',
         mode     => '0664',
-        require  => File["${mediawiki::params::conf_dir}/${name}"],
+        require  => File["${mediawiki_conf_dir}/${name}"],
       }
 
-      file { "${mediawiki::params::conf_dir}\
-              /${name}/${mediawki::params::installation_files}":
+      # Ensure that mediawiki configuration files are included in each instance.
+      mediawiki::files { $mediawiki_install_files:
+        instance_name = $name,
+      }
+
+      # Symlink for the mediawiki instance directory
+      file { "${instance_root_dir}/${name}":
         ensure   => link,
         owner    => 'root',
         group    => 'root',
-        mode     => '0755',
-        require  => File["${mediawiki::params::conf_dir}/${name}"],
-      }
-
-      # Ensure a directory for Apache vhost
-      file { "${mediawiki::params::apache_dir}/${name}":
-        ensure   => link,
-        owner    => 'root',
-        group    => 'root',
-        target   => "${mediawiki::params::conf_dir}/${name}",
+        target   => "${mediawiki_conf_dir}/${name}",
       }
 
       # Each instance has a separate vhost file
@@ -108,8 +110,8 @@ define mediawiki::instance (
         owner    => 'www-data',
         group    => 'www-data',
         content  => template('/mediawiki/instance_vhost.erb'),
-        require  => File["${mediawiki::params::apache_dir}/${name}"],
-        notify   => Service[$mediawiki::params::apache],
+        require  => File["${instance_root_dir}/${name}"],
+        notify   => Service[$apache_daemon],
       }
     }
 
@@ -122,7 +124,7 @@ define mediawiki::instance (
         target   => File["/etc/apache2/sites-available/${name}_vhost"],
       }
 
-      service: { $mediawiki::params::apache:
+      service: { $apache_daemon:
         ensure     => 'running',
         hasstatus  => true,
         hasrestart => true,
@@ -139,7 +141,7 @@ define mediawiki::instance (
         group    => 'www-data',
       }
 
-      service: { $mediawiki::params::apache:
+      service: { $apache_daemon:
         ensure     => 'stopped',
         hasstatus  => true,
         hasrestart => true,
@@ -150,7 +152,7 @@ define mediawiki::instance (
     absent: {
 
       # Remove the instance if it is present
-      file { "${mediawiki::params::conf_dir}/${name}":
+      file { "${mediawiki_conf_dir}/${name}":
         ensure  => absent,
         recurse => true,
       }
