@@ -86,7 +86,7 @@ define mediawiki::instance (
       # Each instance needs a separate folder to upload images
       file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        owner    => 'www-data',
+        owner    => 'root',
         group    => 'www-data',
         mode     => '0664',
         require  => File["${mediawiki_conf_dir}/${name}"],
