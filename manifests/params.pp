@@ -41,7 +41,7 @@ class mediawiki::params {
       $packages           = ['php5', 'php5-mysql',
                              'mediawiki', 'mediawiki-extensions']
       $conf_dir           = '/etc/mediawiki'
-      $instance_root_dir  = '/var/lib/mediawiki'
+      $instance_root_dir  = '/var/www'
       $apache_daemon      = '/usr/sbin/apache2'
       $installation_files = ['api.php', 'config', 'extensions', 'img_auth.php',
                              'includes', 'index.php', 'install-utils.inc',
