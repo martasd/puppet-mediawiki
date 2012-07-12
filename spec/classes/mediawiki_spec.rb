@@ -1,15 +1,13 @@
 require 'spec_helper'
 #require 'ruby-debug'
 
-# Declare useful variables
-packages = ['php5', 'php5-mysql', 'mediawiki', 'mediawiki-extensions']
-
 describe 'mediawiki', :type => :class do
 
   context 'using default parameters on Debian' do
     let(:facts) do
       {
-        :operatingsystem => 'debian'
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian'
       }
     end
 
@@ -23,16 +21,18 @@ describe 'mediawiki', :type => :class do
       should contain_class('mediawiki')
       should contain_class('apache')
       should contain_class('mediawiki::params')
-      should contain_package(packages).with(:ensure => 'latest')
-      should contain_class('mysql::server').with(:config_hash => {:root_password => 'long_password'})
-      should contain_class('memcached').with(:max_memory => '2048')
+      should contain_package('php5').with('ensure' => 'latest')
+      should contain_package('php5-mysql').with('ensure'=> 'latest')
+      should contain_package('mediawiki').with('ensure' => 'latest')
+      should contain_package('mediawiki-extensions').with('ensure' => 'latest')
+      should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
+      #should contain_class('memcached').with(:max_memory => '2048')
       should contain_file('mediawiki_conf_dir').with(
-        :ensure  => directory,
-        :path    => '/etc/mediawiki',
-        :owner   => 'root',
-        :group   => 'root',
-        :mode    => '0755',
-        :require => Package['mediawiki']
+        'ensure'  => 'directory',
+        'path'    => '/etc/mediawiki',
+        'owner'   => 'root',
+        'group'   => 'root',
+        'mode'    => '0755',
       )
     }
   end
@@ -40,7 +40,8 @@ describe 'mediawiki', :type => :class do
   context 'using custom parameters on Debian' do
     let(:facts) do
       {
-        :operatingsystem => 'debian'
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian'
       }
     end
 
@@ -54,18 +55,20 @@ describe 'mediawiki', :type => :class do
 
     it {
       should contain_class('mediawiki')
-      should include_class('apache')
-      should include_class('mediawiki::params')
-      should contain_package(packages).with(:ensure => 'installed')
-      should contain_class('mysql::server').with(:config_hash => {:root_password => 'long_password'})
-      should contain_class('memcached').with(:max_memory => '1024')
+      should contain_class('apache')
+      should contain_class('mediawiki::params')
+      should contain_package('php5').with('ensure' => 'installed')
+      should contain_package('php5-mysql').with('ensure' => 'installed')
+      should contain_package('mediawiki').with('ensure' => 'installed')
+      should contain_package('mediawiki-extensions').with('ensure' => 'installed')
+      should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
+      #should contain_class('memcached').with(:max_memory => '1024')
       should contain_file('mediawiki_conf_dir').with(
-        :ensure  => directory,
-        :path    => '/etc/mediawiki',
-        :owner   => 'root',
-        :group   => 'root',
-        :mode    => '0755',
-        :require => Package['mediawiki']
+        'ensure'  => 'directory',
+        'path'    => '/etc/mediawiki',
+        'owner'   => 'root',
+        'group'   => 'root',
+        'mode'    => '0755',
       )
     }
   end
@@ -74,7 +77,8 @@ describe 'mediawiki', :type => :class do
   context 'using default parameters on Ubuntu' do
     let(:facts) do
       {
-        :operatingsystem => 'ubuntu'
+        :osfamily => 'Debian',
+        :operatingsystem => 'Ubuntu'
       }
     end
     let(:params) do
@@ -87,7 +91,8 @@ describe 'mediawiki', :type => :class do
   context 'using default parameters on CentOS and RedHat' do
     let(:facts) do
       {
-        :operatingsystem => 'centos'
+        :osfamily => 'RedHat',
+        :operatingsystem => 'RedHat'
       }
     end
     let(:params) do

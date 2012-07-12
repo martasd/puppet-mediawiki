@@ -12,35 +12,151 @@ describe 'mediawiki::instance', :type => :define do
   context 'using default parameters on Debian' do
     let(:facts) do
       {
-        :operatingsystem => 'debian'
-      }
-    end
-    let(:params) do
-      {
-        :db_password => 'lengthy_password',
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian'
       }
     end
     
+    let(:params) do
+      {
+        :db_password => 'lengthy_password'
+      }
+    end
+
+    let(:title) do
+      "dummy_instance"
+    end
+    
     it {
-      should include_class('mysql::db')
-      # should contain_mysql__db(
+      should contain_class('mediawiki::params')
+      
+      should contain_mysql__db('dummy_instance').with(
+        'user'     => 'wiki1_user',
+        'password' => 'lengthy_password',
+        'host'     => 'localhost',
+      ) 
+      
+      should contain_file('wiki_instance_dir').with( 
+        'ensure'   => 'directory',
+        'path'     => '/etc/mediawiki/dummy_instance',                                            
+        'owner'    => 'root',
+        'group'    => 'root',
+        'mode'     => '0755',
+      )
+      
+      should contain_file('LocalSettings.php').with(
+        'path'     => '/etc/mediawiki/dummy_instance/LocalSettings.php',
+        'owner'    => 'www-data',
+        'group'    => 'www-data',
+        'mode'     => '0700',
+      )
+      
+      should contain_file('images').with(
+        'ensure'   => 'directory',
+        'path'     => '/etc/mediawiki/dummy_instance/images',
+        'owner'    => 'root',
+        'group'    => 'www-data',
+        'mode'     => '0664',
+      )
+      
+      #should contain_mediawiki__files(["api.php", "config", "extensions", 
+      #                                 "img_auth.php", "includes", "index.php",
+      #                                 "load.php", "languages", "maintenance", 
+      #                                 "mw-config", "opensearch_desc.php", 
+      #                                 "profileinfo.php", "redirect.php", 
+      #                                 "redirect.phtml", "resources", "skins",
+      #                                 "thumb_handler.php", "thumb.php", 
+      #                                 "wiki.phtml"])
+      
+      should contain_file('wiki_instance_dir_link').with(
+        'ensure'   => 'link',
+        'path'     => '/var/www/wikis/dummy_instance',
+        'owner'    => 'root',
+        'group'    => 'root',
+      )
+      
+      should contain_file('wiki_instance_vhost').with(
+        'path'     => '/etc/apache2/sites-available/dummy_instance_vhost',
+        'owner'    => 'www-data',
+        'group'    => 'www-data',
+      )
     }
   end
   
   context 'using custom parameters on Debian' do
     let(:facts) do
       {
-        :operatingsystem => 'debian'
+        :operatingsystem => 'Debian'
       }
     end
+    
     let(:params) do
       {
-        :db_password => 'lengthy_password',
-        :db_name     => 'knowledge_cache',
-        :db_user     => 'knowledge_cacher',
-        :status      => 'enabled',
+        :db_password => 'super_long_password',
+        :db_name     => 'dummy_db',
+        :db_user     => 'dummy_user',
+        :status      => 'present',
       }
     end
+    
+    let(:title) do
+      "dummy_instance"
+    end
+    
+    it {
+      should contain_class('mediawiki::params')
+      
+      should contain_mysql__db('dummy_db').with(
+        'user'     => 'dummy_user',
+        'password' => 'super_long_password',
+        'host'     => 'localhost',
+      ) 
+      
+      should contain_file('wiki_instance_dir').with( 
+        'ensure'   => 'directory',
+        'path'     => '/etc/mediawiki/dummy_instance',                                            
+        'owner'    => 'root',
+        'group'    => 'root',
+        'mode'     => '0755',
+      )
+      
+      should contain_file('LocalSettings.php').with(
+        'path'     => '/etc/mediawiki/dummy_instance/LocalSettings.php',
+        'owner'    => 'www-data',
+        'group'    => 'www-data',
+        'mode'     => '0700',
+      )
+      
+      should contain_file('images').with(
+        'ensure'   => 'directory',
+        'path'     => '/etc/mediawiki/dummy_instance/images',
+        'owner'    => 'root',
+        'group'    => 'www-data',
+        'mode'     => '0664',
+      )
+      
+      #should contain_mediawiki__files(["api.php", "config", "extensions", 
+      #                                 "img_auth.php", "includes", "index.php",
+      #                                 "load.php", "languages", "maintenance", 
+      #                                 "mw-config", "opensearch_desc.php", 
+      #                                 "profileinfo.php", "redirect.php", 
+      #                                 "redirect.phtml", "resources", "skins",
+      #                                 "thumb_handler.php", "thumb.php", 
+      #                                 "wiki.phtml"])
+      
+      should contain_file('wiki_instance_dir_link').with(
+        'ensure'   => 'link',
+        'path'     => '/var/www/wikis/dummy_instance',
+        'owner'    => 'root',
+        'group'    => 'root',
+      )
+      
+      should contain_file('wiki_instance_vhost').with(
+        'path'     => '/etc/apache2/sites-available/dummy_instance_vhost',
+        'owner'    => 'www-data',
+        'group'    => 'www-data',
+      )
+    }   
   end
     
 
@@ -48,12 +164,13 @@ describe 'mediawiki::instance', :type => :define do
   context 'using default parameters on Ubuntu' do
     let(:facts) do
       {
-        :operatingsystem => 'ubuntu'
+        :osfamily => 'Debian',
+        :operatingsystem => 'Ubuntu'
       }
     end
     let(:params) do
       {
-        :db_password => 'lengthy_password',
+        :db_password => 'lengthy_password'
       }
     end
   end
@@ -61,7 +178,7 @@ describe 'mediawiki::instance', :type => :define do
   context 'using default parameters on CentOS and RedHat' do
     let(:facts) do
       {
-        :operatingsystem => 'centos'
+        :operatingsystem => 'RedHat'
       }
     end
     let(:params) do
