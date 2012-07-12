@@ -48,15 +48,16 @@ class mediawiki (
     config_hash => { 'root_password' => $db_root_password },
   }
 
-  class { 'memcached':
-    max_memory => $max_memory,
-  }
+  # Not including problematic memcached module
+  #class { 'memcached':
+  #  max_memory => $max_memory,
+  #}
 
   # Include optional packages (see mediawiki_ubuntu.txt)
 
   # Make sure the directories and files common for all instances are included
   file { 'mediawiki_conf_dir':
-    ensure  => directory,
+    ensure  => 'directory',
     path    => $mediawiki::params::conf_dir,
     owner   => 'root',
     group   => 'root',
