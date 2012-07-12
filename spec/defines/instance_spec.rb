@@ -9,10 +9,10 @@ require 'spec_helper'
 
 describe 'mediawiki::instance', :type => :define do
 
-  context 'using default parameters on Ubuntu' do
+  context 'using default parameters on Debian' do
     let(:facts) do
       {
-        :operatingsystem => 'ubuntu'
+        :operatingsystem => 'debian'
       }
     end
     let(:params) do
@@ -22,13 +22,15 @@ describe 'mediawiki::instance', :type => :define do
     end
     
     it {
+      should include_class('mysql::db')
+      # should contain_mysql__db(
     }
   end
   
-  context 'using custom parameters on Ubuntu' do
+  context 'using custom parameters on Debian' do
     let(:facts) do
       {
-        :operatingsystem => 'ubuntu'
+        :operatingsystem => 'debian'
       }
     end
     let(:params) do
@@ -42,11 +44,11 @@ describe 'mediawiki::instance', :type => :define do
   end
     
 
-  # Add additional contexts for different Debian and CentOS
-  context 'using default parameters on Debian' do
+  # Add additional contexts for different Ubuntu and CentOS
+  context 'using default parameters on Ubuntu' do
     let(:facts) do
       {
-        :operatingsystem => 'debian'
+        :operatingsystem => 'ubuntu'
       }
     end
     let(:params) do
