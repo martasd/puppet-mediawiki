@@ -25,7 +25,9 @@ define mediawiki::files (
   $instance_name,
   ) {
 
-  $target_dir = "${mediawwiki::params::conf_dir}/${instance_name}"
+  include mediawiki::params
+  
+  $target_dir = "${mediawiki::params::conf_dir}/${instance_name}"
 
   file { $name:
     ensure  => link,
