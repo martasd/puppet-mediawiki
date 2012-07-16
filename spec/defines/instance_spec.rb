@@ -142,14 +142,20 @@ describe 'mediawiki::instance', :type => :define do
         'mode'     => '0664',
       )
       
-      #should contain_mediawiki__files(["api.php", "config", "extensions", 
-      #                                 "img_auth.php", "includes", "index.php",
-      #                                 "load.php", "languages", "maintenance", 
-      #                                 "mw-config", "opensearch_desc.php", 
-      #                                 "profileinfo.php", "redirect.php", 
-      #                                 "redirect.phtml", "resources", "skins",
-      #                                 "thumb_handler.php", "thumb.php", 
-      #                                 "wiki.phtml"])
+      ['api.php', 'config', 'extensions','img_auth.php',
+       'includes', 'index.php', 'load.php', 'languages',
+       'maintenance', 'mw-config', 'opensearch_desc.php',
+       'profileinfo.php', 'redirect.php', 'redirect.phtml',
+       'resources', 'skins', 'thumb_handler.php',
+       'thumb.php', 'wiki.phtml'].each do |f| 
+      should contain_file(f).with(
+        'ensure'  => 'link',
+        'owner'   => 'root',
+        'group'   => 'root',
+        'mode'    => '0755',
+        'target'  => "/etc/mediawiki/dummy_instance/#{f}",
+                                 )
+      end 
       
       should contain_file('wiki_instance_dir_link').with(
         'ensure'   => 'link',
