@@ -8,7 +8,7 @@
 # [*db_user*]     - name of the mysql database user
 # [*db_password*] - password for the mysql database user
 # [*status*]      - the current status of the wiki instance
-#                 - options: present, enabled, disabled, absent
+#                 - options: enabled, disabled, absent
 #
 # === Examples
 #
@@ -21,7 +21,7 @@
 #   db_password = 'really_long_password',
 #   db_name     = 'wiki1',
 #   db_user     = 'wiki1_user',
-#   status      = 'present'
+#   status      = 'enabled'
 # }
 #
 # === Authors
@@ -36,7 +36,7 @@ define mediawiki::instance (
   $db_password,
   $db_name = $name,
   $db_user = 'wiki1_user',
-  $status = 'present'
+  $status = 'enabled'
   ) {
 
   include mediawiki::params
@@ -50,20 +50,19 @@ define mediawiki::instance (
   $instance_root_dir       = $mediawiki::params::instance_root_dir
   $apache_daemon           = $mediawiki::params::apache_daemon
 
+  # Create a database for this mediawiki instance
+  mysql::db { $db_name:
+    user     => $db_user,
+    password => $db_password,
+    host     => 'localhost',
+    grant    => ['all'],
+  }
+
+  # Figure out how to improve db security (manually done by
+  # mysql_secure_installation)
   case $status {
-    present, default: {
-
-      # Create a database for this mediawiki instance
-      mysql::db { $db_name:
-        user     => $db_user,
-        password => $db_password,
-        host     => 'localhost',
-        grant    => ['all'],
-      }
-
-      # Figure out how to improve db security (manually done by
-      # mysql_secure_installation)
-
+    'enabled', 'disabled': {
+      
       # Directory for this wiki instance
       file { 'wiki_instance_dir':
         ensure   => directory,
@@ -108,69 +107,42 @@ define mediawiki::instance (
         target   => "${mediawiki_conf_dir}/${name}",
       }
 
-      # Each instance has a separate vhost file
-      file { 'wiki_instance_vhost':
-        path     => "/etc/apache2/sites-available/${name}_vhost",
-        owner    => 'www-data',
-        group    => 'www-data',
-        content  => template('mediawiki/instance_vhost.erb'),
-        require  => File["${instance_root_dir}/${name}"],
-        notify   => Service[$apache_daemon],
+      # Each instance has a separate vhost configuration
+      apache::vhost { $name:
+        port        => $port,
+        docroot     => $docroot,
+        serveradmin => $serveradmin,
+        status      => $status,
       }
     }
+    'absent': {
+      
+      apache::vhost { $name:
+        port        => $port,
+        docroot     => $docroot,
+        serveradmin => $serveradmin,
+        status      => 'disabled',
+      } 
 
-    enabled: {
-
-      file { 'wiki_instance_vhost_link':
-        ensure   => link,
-        path     => "/etc/apache2/sites-enabled/${name}_vhost",
-        owner    => 'www-data',
-        group    => 'www-data',
-        target   => File["/etc/apache2/sites-available/${name}_vhost"],
-      }
-
-      service { $apache_daemon:
-        ensure     => 'running',
-        hasstatus  => true,
-        hasrestart => true,
-        enable     => true,
-        require    => File["/etc/apache2/sites-enabled/${name}_vhost"],
-      }
-    }
-
-    disabled: {
-
-      file { 'wiki_instance_vhost_link':
-        ensure   => absent,
-        path     => "/etc/apache2/sites-enabled/${name}_vhost",
-        owner    => 'www-data',
-        group    => 'www-data',
-      }
-
-      service { $apache_daemon:
-        ensure     => 'stopped',
-        hasstatus  => true,
-        hasrestart => true,
-        enable     => false,
-      }
-    }
-
-    absent: {
-
-      # Remove the instance if it is present
+      # Remove the instance directory if it is present
       file { 'wiki_instance_dir':
         ensure  => absent,
         path    => "${mediawiki_conf_dir}/${name}",
         recurse => true,
       }
 
-      file { 'wiki_instance_vhost':
-        ensure  => absent,
-        path    => "/etc/apache2/sites-available/${name}_vhost",
+      # Remove the symlink for the mediawiki instance directory
+      file { 'wiki_instance_dir_link':
+        ensure   => absent,
+        path     => "${instance_root_dir}/${name}",
+        recurse  => true,
       }
 
       # Delete the mysql database
       # NOTE: Need to fix puppet-mysql to allow to specify the option
+    }
+    default: {
+      fail("The status of the mediawiki instance must be enabled, disabled, or absent. ${status} is not supported.")
     }
   }
 }

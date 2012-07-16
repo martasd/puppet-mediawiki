@@ -73,7 +73,6 @@ describe 'mediawiki::instance', :type => :define do
         'target'  => "/etc/mediawiki/dummy_instance/#{f}",
                                  )
       end
-
       
       should contain_file('wiki_instance_dir_link').with(
         'ensure'   => 'link',
@@ -83,7 +82,7 @@ describe 'mediawiki::instance', :type => :define do
       )
       
       should contain_file('wiki_instance_vhost').with(
-        'path'     => '/etc/apache2/sites-available/dummy_instance_vhost',
+        'path'     => '/etc/apache2/sites-enabled/dummy_instance_vhost',
         'owner'    => 'www-data',
         'group'    => 'www-data',
       )
@@ -102,7 +101,7 @@ describe 'mediawiki::instance', :type => :define do
         :db_password => 'super_long_password',
         :db_name     => 'dummy_db',
         :db_user     => 'dummy_user',
-        :status      => 'present',
+        :status      => 'enabled',
       }
     end
     
@@ -165,7 +164,7 @@ describe 'mediawiki::instance', :type => :define do
       )
       
       should contain_file('wiki_instance_vhost').with(
-        'path'     => '/etc/apache2/sites-available/dummy_instance_vhost',
+        'path'     => '/etc/apache2/sites-enabled/dummy_instance_vhost',
         'owner'    => 'www-data',
         'group'    => 'www-data',
       )
