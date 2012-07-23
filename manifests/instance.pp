@@ -38,12 +38,16 @@ define mediawiki::instance (
   $db_user = 'wiki1_user',
   $status = 'present'
   ) {
+  
+  validate_re($status, [ '^present$', '^absent$', '^deleted$' ],
+  "${status} is not supported for status.
+  Allowed values are 'present', 'absent', and 'deleted'.")
 
   include mediawiki::params
-  
+
   # mediawiki needs to be installed before a particular instance is created
   #Class['mediawiki'] -> Mediawiki::Instance[$name]
-  
+
   # Make the configuration file more readable
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
