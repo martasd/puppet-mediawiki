@@ -8,7 +8,7 @@
 # [*db_user*]     - name of the mysql database user
 # [*db_password*] - password for the mysql database user
 # [*status*]      - the current status of the wiki instance
-#                 - options: enabled, disabled, absent
+#                 - options: present, absent, deleted
 #
 # === Examples
 #
@@ -21,7 +21,7 @@
 #   db_password = 'really_long_password',
 #   db_name     = 'wiki1',
 #   db_user     = 'wiki1_user',
-#   status      = 'enabled'
+#   status      = 'present'
 # }
 #
 # === Authors
@@ -36,7 +36,7 @@ define mediawiki::instance (
   $db_password,
   $db_name = $name,
   $db_user = 'wiki1_user',
-  $status = 'enabled'
+  $status = 'present'
   ) {
 
   include mediawiki::params
@@ -61,7 +61,7 @@ define mediawiki::instance (
   # Figure out how to improve db security (manually done by
   # mysql_secure_installation)
   case $status {
-    'enabled', 'disabled': {
+    'present', 'absent': {
       
       # Directory for this wiki instance
       file { 'wiki_instance_dir':
@@ -115,13 +115,13 @@ define mediawiki::instance (
         status      => $status,
       }
     }
-    'absent': {
+    'deleted': {
       
       apache::vhost { $name:
         port        => $port,
         docroot     => $docroot,
         serveradmin => $serveradmin,
-        status      => 'disabled',
+        status      => 'absent',
       } 
 
       # Remove the instance directory if it is present
@@ -142,7 +142,7 @@ define mediawiki::instance (
       # NOTE: Need to fix puppet-mysql to allow to specify the option
     }
     default: {
-      fail("The status of the mediawiki instance must be enabled, disabled, or absent. ${status} is not supported.")
+      fail("The status of the mediawiki instance must be present, absent, or deleted. ${status} is not supported.")
     }
   }
 }
