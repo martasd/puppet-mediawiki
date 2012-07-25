@@ -13,6 +13,7 @@
 # === Examples
 #
 # class { 'mediawiki':
+#   admin_email      = 'admin@puppetlabs.com',
 #   db_root_password = 'really_really_long_password',
 #   max_memory       = '1024'
 # }
@@ -36,7 +37,8 @@ define mediawiki::instance (
   $db_password,
   $db_name = $name,
   $db_user = 'wiki1_user',
-  $status = 'present'
+  $port    = '80',
+  $status  = 'present'
   ) {
   
   validate_re($status, [ '^present$', '^absent$', '^deleted$' ],
@@ -46,9 +48,10 @@ define mediawiki::instance (
   include mediawiki::params
 
   # mediawiki needs to be installed before a particular instance is created
-  #Class['mediawiki'] -> Mediawiki::Instance[$name]
+  Class['mediawiki'] -> Mediawiki::Instance[$name]
 
   # Make the configuration file more readable
+  $admin_email             = $mediawiki::admin_email
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
   $instance_root_dir       = $mediawiki::params::instance_root_dir
@@ -113,19 +116,20 @@ define mediawiki::instance (
 
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
-        port        => $port,
-        docroot     => $docroot,
-        serveradmin => $serveradmin,
-        status      => $status,
+        port         => $port,
+        docroot      => $instance_root_dir,
+        serveradmin  => $admin_email,
+        template     => 'mediawiki/instance_vhost.erb',
+        vhost_ensure => $status,
       }
     }
     'deleted': {
       
       apache::vhost { $name:
-        port        => $port,
-        docroot     => $docroot,
-        serveradmin => $serveradmin,
-        status      => 'absent',
+        port         => $port,
+        docroot      => $instance_root_dir,
+        serveradmin  => $admin_email,
+        vhost_ensure => 'absent',
       } 
 
       # Remove the instance directory if it is present
@@ -144,9 +148,6 @@ define mediawiki::instance (
 
       # Delete the mysql database
       # NOTE: Need to fix puppet-mysql to allow to specify the option
-    }
-    default: {
-      fail("The status of the mediawiki instance must be present, absent, or deleted. ${status} is not supported.")
     }
   }
 }

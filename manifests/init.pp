@@ -6,6 +6,7 @@
 #
 # === Parameters
 #
+# [*admin_email*]      - email address Apache will display when rendering error page
 # [*db_root_password*] - password for mysql root user
 # [*package_ensure*]   - state of the package
 # [*max_memory*]       - a memcached memory limit
@@ -13,6 +14,7 @@
 # === Examples
 #
 # class { 'mediawiki':
+#   admin_email      = 'admin@puppetlabs.com',
 #   db_root_password = 'really_really_long_password',
 #   max_memory       = '1024'
 # }
@@ -31,6 +33,7 @@
 # Copyright 2012 Martin Dluhos
 #
 class mediawiki (
+  $admin_email,
   $db_root_password,
   $package_ensure = 'latest',
   $max_memory     = '2048'

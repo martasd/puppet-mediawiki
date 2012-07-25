@@ -10,6 +10,11 @@ require 'spec_helper'
 describe 'mediawiki::instance', :type => :define do
 
   context 'using default parameters on Debian' do
+    let(:pre_condition) do
+      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+         db_root_password => "really_really_long_password" }'
+    end
+    
     let(:facts) do
       {
         :osfamily => 'Debian',
@@ -81,17 +86,25 @@ describe 'mediawiki::instance', :type => :define do
         'group'    => 'root',
       )
       
-      should contain_file('wiki_instance_vhost').with(
-        'path'     => '/etc/apache2/sites-enabled/dummy_instance_vhost',
-        'owner'    => 'www-data',
-        'group'    => 'www-data',
+      should contain_apache__vhost('dummy_instance').with(
+        'port'         => '80',
+        'docroot'      => '/var/www/wikis',
+        'serveradmin'  => 'admin@puppetlabs.com',
+        'template'     => 'mediawiki/instance_vhost.erb',
+        'vhost_ensure' => 'present',
       )
     }
   end
   
   context 'using custom parameters on Debian' do
+    let(:pre_condition) do
+      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+         db_root_password => "really_really_long_password" }'
+    end
+    
     let(:facts) do
       {
+        :osfamily => 'Debian',
         :operatingsystem => 'Debian'
       }
     end
@@ -101,7 +114,7 @@ describe 'mediawiki::instance', :type => :define do
         :db_password => 'super_long_password',
         :db_name     => 'dummy_db',
         :db_user     => 'dummy_user',
-        :status      => 'enabled',
+        :status      => 'present',
       }
     end
     
@@ -110,6 +123,7 @@ describe 'mediawiki::instance', :type => :define do
     end
     
     it {
+      should contain_class('mediawiki')
       should contain_class('mediawiki::params')
       
       should contain_mysql__db('dummy_db').with(
@@ -163,23 +177,31 @@ describe 'mediawiki::instance', :type => :define do
         'group'    => 'root',
       )
       
-      should contain_file('wiki_instance_vhost').with(
-        'path'     => '/etc/apache2/sites-enabled/dummy_instance_vhost',
-        'owner'    => 'www-data',
-        'group'    => 'www-data',
-      )
+      should contain_apache__vhost('dummy_instance').with(
+        'port'         => '80',
+        'docroot'      => '/var/www/wikis',
+        'serveradmin'  => 'admin@puppetlabs.com',
+        'template'     => 'mediawiki/instance_vhost.erb',
+        'vhost_ensure' => 'present',
+      ) 
     }   
   end
     
 
   # Add additional contexts for different Ubuntu and CentOS
   context 'using default parameters on Ubuntu' do
+    let(:pre_condition) do
+      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+         db_root_password => "really_really_long_password" }'
+    end
+    
     let(:facts) do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Ubuntu'
       }
     end
+    
     let(:params) do
       {
         :db_password => 'lengthy_password'
@@ -188,15 +210,25 @@ describe 'mediawiki::instance', :type => :define do
   end
   
   context 'using default parameters on CentOS and RedHat' do
+    let(:pre_condition) do
+      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+         db_root_password => "really_really_long_password" }'
+    end
+    
     let(:facts) do
       {
         :operatingsystem => 'RedHat'
       }
     end
+    
     let(:params) do
       {
         :db_password => 'lengthy_password',
       }
+    end
+    
+    let(:title) do
+      "dummy_instance"
     end
   end
 end
