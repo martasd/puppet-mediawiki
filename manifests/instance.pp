@@ -57,13 +57,6 @@ define mediawiki::instance (
   $instance_root_dir       = $mediawiki::params::instance_root_dir
   $apache_daemon           = $mediawiki::params::apache_daemon
 
-  # Create a database for this mediawiki instance
-  mysql::db { $db_name:
-    user     => $db_user,
-    password => $db_password,
-    host     => 'localhost',
-    grant    => ['all'],
-  }
 
   # Figure out how to improve db security (manually done by
   # mysql_secure_installation)
@@ -114,6 +107,15 @@ define mediawiki::instance (
         target   => "${mediawiki_conf_dir}/${name}",
       }
 
+      # Create a database for this mediawiki instance
+      mysql::db { $db_name:
+        user     => $db_user,
+        password => $db_password,
+        host     => 'localhost',
+        grant    => ['all'],
+        ensure   => 'present',
+      }
+      
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
         port         => $port,
@@ -125,14 +127,6 @@ define mediawiki::instance (
     }
     'deleted': {
       
-      apache::vhost { $name:
-        port         => $port,
-        docroot      => $instance_root_dir,
-        serveradmin  => $admin_email,
-        template     => 'mediawiki/instance_vhost.erb',
-        vhost_ensure => 'absent',
-      } 
-
       # Remove the instance directory if it is present
       file { 'wiki_instance_dir':
         ensure  => absent,
@@ -147,8 +141,21 @@ define mediawiki::instance (
         recurse  => true,
       }
 
-      # Delete the mysql database
-      # NOTE: Need to fix puppet-mysql to allow to specify the option
+      mysql::db { $db_name:
+        user     => $db_user,
+        password => $db_password,
+        host     => 'localhost',
+        grant    => ['all'],
+        ensure   => 'absent',
+      }
+
+      apache::vhost { $name:
+        port         => $port,
+        docroot      => $instance_root_dir,
+        serveradmin  => $admin_email,
+        template     => 'mediawiki/instance_vhost.erb',
+        vhost_ensure => 'absent',
+      } 
     }
   }
 }

@@ -35,12 +35,6 @@ describe 'mediawiki::instance', :type => :define do
     it 'should have enabled the instance' do
       should contain_class('mediawiki::params')
       
-      should contain_mysql__db('dummy_instance').with(
-        'user'     => 'wiki1_user',
-        'password' => 'lengthy_password',
-        'host'     => 'localhost',
-      ) 
-      
       should contain_file('wiki_instance_dir').with( 
         'ensure'   => 'directory',
         'path'     => '/etc/mediawiki/dummy_instance',                                            
@@ -86,6 +80,14 @@ describe 'mediawiki::instance', :type => :define do
         'group'    => 'root',
       )
       
+      should contain_mysql__db('dummy_instance').with(
+        'user'     => 'wiki1_user',
+        'password' => 'lengthy_password',
+        'host'     => 'localhost',
+        'grant'    => 'all',
+        'ensure'   => 'present',
+      )
+
       should contain_apache__vhost('dummy_instance').with(
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
@@ -125,12 +127,6 @@ describe 'mediawiki::instance', :type => :define do
       params.merge!({'status' => 'absent'})
       should contain_class('mediawiki')
       should contain_class('mediawiki::params')
-      
-      should contain_mysql__db('dummy_db').with(
-        'user'     => 'dummy_user',
-        'password' => 'super_long_password',
-        'host'     => 'localhost',
-      ) 
       
       should contain_file('wiki_instance_dir').with( 
         'ensure'   => 'directory',
@@ -177,6 +173,14 @@ describe 'mediawiki::instance', :type => :define do
         'group'    => 'root',
       )
       
+      should contain_mysql__db('dummy_db').with(
+        'user'     => 'dummy_user',
+        'password' => 'super_long_password',
+        'host'     => 'localhost',
+        'grant'    => 'all',
+        'ensure'   => 'present',
+      ) 
+       
       should contain_apache__vhost('dummy_instance').with(
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
@@ -207,6 +211,14 @@ describe 'mediawiki::instance', :type => :define do
         'ensure'   => 'absent',
         'path'     => '/var/www/wikis/dummy_instance',
       )
+      
+      should contain_mysql__db('dummy_db').with(
+        'user'     => 'dummy_user',
+        'password' => 'super_long_password',
+        'host'     => 'localhost',
+        'grant'    => 'all',
+        'ensure'   => 'absent',
+      )  
       
       should contain_apache__vhost('dummy_instance').with(
         'port'         => '80',
