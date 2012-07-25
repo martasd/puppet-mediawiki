@@ -32,7 +32,7 @@ describe 'mediawiki::instance', :type => :define do
       'dummy_instance'
     end
     
-    it {
+    it 'should have enabled the instance' do
       should contain_class('mediawiki::params')
       
       should contain_mysql__db('dummy_instance').with(
@@ -93,7 +93,7 @@ describe 'mediawiki::instance', :type => :define do
         'template'     => 'mediawiki/instance_vhost.erb',
         'vhost_ensure' => 'present',
       )
-    }
+    end
   end
   
   context 'using custom parameters on Debian' do
@@ -114,7 +114,6 @@ describe 'mediawiki::instance', :type => :define do
         :db_password => 'super_long_password',
         :db_name     => 'dummy_db',
         :db_user     => 'dummy_user',
-        :status      => 'present',
       }
     end
     
@@ -122,7 +121,8 @@ describe 'mediawiki::instance', :type => :define do
       "dummy_instance"
     end
     
-    it {
+    it 'should have disabled the instance' do
+      params.merge!({'status' => 'absent'})
       should contain_class('mediawiki')
       should contain_class('mediawiki::params')
       
@@ -182,9 +182,40 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'mediawiki/instance_vhost.erb',
-        'vhost_ensure' => 'present',
+        'vhost_ensure' => 'absent',
       ) 
-    }   
+    end
+    
+    it 'should have deleted the instance' do
+      params.merge!({'status' => 'deleted'})
+      should contain_class('mediawiki')
+      should contain_class('mediawiki::params')
+      
+      should contain_mysql__db('dummy_db').with(
+        'user'     => 'dummy_user',
+        'password' => 'super_long_password',
+        'host'     => 'localhost',
+      ) 
+      
+      should contain_file('wiki_instance_dir').with( 
+        'ensure'   => 'absent',
+        'path'     => '/etc/mediawiki/dummy_instance',                                            
+      )
+     
+      
+      should contain_file('wiki_instance_dir_link').with(
+        'ensure'   => 'absent',
+        'path'     => '/var/www/wikis/dummy_instance',
+      )
+      
+      should contain_apache__vhost('dummy_instance').with(
+        'port'         => '80',
+        'docroot'      => '/var/www/wikis',
+        'serveradmin'  => 'admin@puppetlabs.com',
+        'template'     => 'mediawiki/instance_vhost.erb',
+        'vhost_ensure' => 'absent',
+      ) 
+    end
   end
     
 

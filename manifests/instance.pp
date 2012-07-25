@@ -129,6 +129,7 @@ define mediawiki::instance (
         port         => $port,
         docroot      => $instance_root_dir,
         serveradmin  => $admin_email,
+        template     => 'mediawiki/instance_vhost.erb',
         vhost_ensure => 'absent',
       } 
 
