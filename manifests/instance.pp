@@ -7,22 +7,24 @@
 # [*db_name*]     - name of the mediawiki instance mysql database
 # [*db_user*]     - name of the mysql database user
 # [*db_password*] - password for the mysql database user
+# [*port*]        - port on mediawiki web server
 # [*status*]      - the current status of the wiki instance
 #                 - options: present, absent, deleted
 #
 # === Examples
 #
 # class { 'mediawiki':
-#   admin_email      = 'admin@puppetlabs.com',
-#   db_root_password = 'really_really_long_password',
-#   max_memory       = '1024'
+#   admin_email      => 'admin@puppetlabs.com',
+#   db_root_password => 'really_really_long_password',
+#   max_memory       => '1024'
 # }
 #
 # mediawiki::instance { 'my_wiki1':
-#   db_password = 'really_long_password',
-#   db_name     = 'wiki1',
-#   db_user     = 'wiki1_user',
-#   status      = 'present'
+#   db_password => 'really_long_password',
+#   db_name     => 'wiki1',
+#   db_user     => 'wiki1_user',
+#   port        => '80',
+#   status      => 'present'
 # }
 #
 # === Authors

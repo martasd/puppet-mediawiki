@@ -10,7 +10,7 @@
 # === Examples
 #
 # mediawiki::files { $mediawiki_install_files:
-#   instance_name = 'wiki1',
+#   instance_name => 'wiki1',
 # }
 #
 # === Authors

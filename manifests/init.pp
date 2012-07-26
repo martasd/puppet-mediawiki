@@ -14,14 +14,14 @@
 # === Examples
 #
 # class { 'mediawiki':
-#   admin_email      = 'admin@puppetlabs.com',
-#   db_root_password = 'really_really_long_password',
-#   max_memory       = '1024'
+#   admin_email      => 'admin@puppetlabs.com',
+#   db_root_password => 'really_really_long_password',
+#   max_memory       => '1024'
 # }
 #
 # mediawiki::instance { 'my_wiki1':
-#   db_name     = 'wiki1_user',
-#   db_password = 'really_long_password',
+#   db_name     => 'wiki1_user',
+#   db_password => 'really_long_password',
 # }
 #
 ## === Authors
