@@ -38,7 +38,7 @@
 define mediawiki::instance (
   $db_password,
   $db_name = $name,
-  $db_user = 'wiki1_user',
+  $db_user = "${name}_user",
   $port    = '80',
   $status  = 'present'
   ) {

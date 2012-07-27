@@ -81,7 +81,7 @@ describe 'mediawiki::instance', :type => :define do
       )
       
       should contain_mysql__db('dummy_instance').with(
-        'user'     => 'wiki1_user',
+        'user'     => 'dummy_instance_user',
         'password' => 'lengthy_password',
         'host'     => 'localhost',
         'grant'    => 'all',
