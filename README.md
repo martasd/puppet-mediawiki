@@ -2,18 +2,37 @@
 
 ## Description
 
-This module deploys and manages multiple mediawiki instances using one mediawiki installation. This module is designed for Enterprise Linux, Ubuntu, and Debian.
+This module deploys and manages multiple mediawiki instances using a single mediawiki installation. This module has been designed and tested for CentOS 6, Red Hat Enterprise Linux 6, Debian Squeeze, Debian Wheezy, and Ubuntu Precise.
 
 ## Usage
 
-Installs the mediawiki package:
+First, install the mediawiki package which will be used by all wiki instances:
 
-    mediawiki { 'my_wiki1':
-      $db_root_password = 'really_long_password',
-      $db_name          = 'wiki1_user',
-      $db_password      = 'another_really_long_password',
-      $max_memory       = 1024,
-      }
+    class { 'mediawiki':
+      admin_email      => 'admin@puppetlabs.com',
+      db_root_password => 'really_really_long_password',
+      max_memory       => '1024'
+    }
+    
+Next, create an individual wiki instance:
+
+    mediawiki::instance { 'my_wiki1':
+      db_password => 'super_long_password',
+      db_name     => 'wiki1',
+      db_user     => 'wiki1_user'
+      port        => '80',
+      status      => 'present'
+    }
+
+Using this module, one can create multiple independent wiki instances. To create another wiki instance, add the following puppet code:
+
+    mediawiki::instance { 'my_wiki2':
+      db_password => 'another_super_long_password',
+      db_name     => 'another_wiki',
+      db_user     => 'another_wiki_user'
+      port        => '80',
+      status      => 'present'
+    }
 
 ## Reference
 
