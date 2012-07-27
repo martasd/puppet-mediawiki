@@ -1,5 +1,5 @@
 name    'puppet-mediawiki'
-version '0.0.8'
+version '0.1.0'
 source 'git@github.com:martasd/puppet-mediawiki.git'
 author 'Martin Dluhos'
 license 'GPLv3'
