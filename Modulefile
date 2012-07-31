@@ -1,4 +1,4 @@
-name    'puppet-mediawiki'
+name    'martasd-mediawiki'
 version '0.1.0'
 source 'git@github.com:martasd/puppet-mediawiki.git'
 author 'Martin Dluhos'
