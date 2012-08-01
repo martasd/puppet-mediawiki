@@ -66,11 +66,12 @@ describe 'mediawiki::instance', :type => :define do
        'thumb.php', 'wiki.phtml'].each do |f| 
       should contain_file(f).with(
         'ensure'  => 'link',
+        'path'    => "/etc/mediawiki/dummy_instance/#{f}", 
         'owner'   => 'root',
         'group'   => 'root',
         'mode'    => '0755',
-        'target'  => "/etc/mediawiki/dummy_instance/#{f}",
-                                 )
+        'target'  => "/usr/share/mediawiki/#{f}",
+       )
       end
       
       should contain_file('wiki_instance_dir_link').with(
@@ -93,7 +94,7 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'mediawiki/instance_vhost.erb',
-        'vhost_ensure' => 'present',
+        'ensure'       => 'present',
       )
     end
   end
@@ -159,11 +160,12 @@ describe 'mediawiki::instance', :type => :define do
        'thumb.php', 'wiki.phtml'].each do |f| 
       should contain_file(f).with(
         'ensure'  => 'link',
+        'path'    => "/etc/mediawiki/dummy_instance/#{f}", 
         'owner'   => 'root',
         'group'   => 'root',
         'mode'    => '0755',
-        'target'  => "/etc/mediawiki/dummy_instance/#{f}",
-                                 )
+        'target'  => "/usr/share/mediawiki/#{f}",
+      )
       end 
       
       should contain_file('wiki_instance_dir_link').with(
@@ -186,7 +188,7 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'mediawiki/instance_vhost.erb',
-        'vhost_ensure' => 'absent',
+        'ensure'       => 'absent',
       ) 
     end
     
@@ -225,7 +227,7 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'mediawiki/instance_vhost.erb',
-        'vhost_ensure' => 'absent',
+        'ensure'       => 'absent',
       ) 
     end
   end

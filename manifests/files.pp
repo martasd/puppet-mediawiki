@@ -27,14 +27,16 @@ define mediawiki::files (
 
   include mediawiki::params
   
-  $target_dir = "${mediawiki::params::conf_dir}/${instance_name}"
+  $install_dir = $mediawiki::params::install_dir
+  $target_dir  = "${mediawiki::params::conf_dir}/${instance_name}"
 
   file { $name:
     ensure  => link,
+    path    => "${target_dir}/${name}",
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    target  => "${target_dir}/${name}",
+    target  => "${install_dir}/${name}",
     require => File[$target_dir],
   }
 }
