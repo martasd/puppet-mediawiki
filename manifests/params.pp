@@ -26,7 +26,8 @@ class mediawiki::params {
     }
     debian: {
       $packages           = ['php5', 'php5-mysql',
-                             'mediawiki', 'mediawiki-extensions']
+                             'mediawiki']
+      $install_dir        = '/usr/share/mediawiki'
       $conf_dir           = '/etc/mediawiki'
       $instance_root_dir  = '/var/www/wikis'
       $apache_daemon      = '/usr/sbin/apache2'
@@ -39,7 +40,8 @@ class mediawiki::params {
     }
     ubuntu: {
       $packages           = ['php5', 'php5-mysql',
-                             'mediawiki', 'mediawiki-extensions']
+                             'mediawiki']
+      $install_dir        = '/usr/share/mediawiki'
       $conf_dir           = '/etc/mediawiki'
       $instance_root_dir  = '/var/www/wikis'
       $apache_daemon      = '/usr/sbin/apache2'
