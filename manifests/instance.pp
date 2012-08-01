@@ -72,7 +72,7 @@ define mediawiki::instance (
         owner    => 'root',
         group    => 'root',
         mode     => '0755',
-        require  => File['configuration_dir'],
+        require  => File["${mediawiki_conf_dir}"],
       }
 
       # Mediawiki configuration file for this instance
@@ -124,7 +124,7 @@ define mediawiki::instance (
         docroot      => $instance_root_dir,
         serveradmin  => $admin_email,
         template     => 'mediawiki/instance_vhost.erb',
-        vhost_ensure => $status,
+        ensure       => $status,
       }
     }
     'deleted': {
@@ -156,7 +156,7 @@ define mediawiki::instance (
         docroot      => $instance_root_dir,
         serveradmin  => $admin_email,
         template     => 'mediawiki/instance_vhost.erb',
-        vhost_ensure => 'absent',
+        ensure       => 'absent',
       } 
     }
   }
