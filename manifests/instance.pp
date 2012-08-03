@@ -54,18 +54,41 @@ define mediawiki::instance (
 
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
+  $db_root_password        = $mediawiki::db_root_password
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
   $instance_root_dir       = $mediawiki::params::instance_root_dir
   $apache_daemon           = $mediawiki::params::apache_daemon
-
 
   # Figure out how to improve db security (manually done by
   # mysql_secure_installation)
   case $status {
     'present', 'absent': {
       
-      # Directory for this wiki instance
+      exec { 'mediawiki_install_script':
+        subscribe   => File['wiki_instance_dir'],
+        unless      => "test -f ${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        cwd         => "${install_dir}/maintenance",
+        provider    => shell,
+        # make sure to make the paths absolute 
+        command     => "/usr/bin/php install.php                  \
+                        --pass puppet                             \
+                        --email ${admin_email}                    \
+                        --scriptpath '/${name}'                   \
+                        --dbtype mysql                            \
+                        --dbserver localhost                      \
+                        --installdbuser root                      \
+                        --installdbpass ${db_root_password}       \
+                        --dbname ${db_name}                       \
+                        --dbuser ${db_user}                       \
+                        --dbpass ${db_password}                   \
+                        --confpath '{mediawiki_conf_dir}/${name}' \
+                        --lang en                                 \
+                        # --dbpassfile                            \
+                        ${name}                                   \
+                        admin",
+      }
+  
       file { 'wiki_instance_dir':
         ensure   => directory,
         path     => "${mediawiki_conf_dir}/${name}",
@@ -73,16 +96,6 @@ define mediawiki::instance (
         group    => 'root',
         mode     => '0755',
         require  => File["${mediawiki_conf_dir}"],
-      }
-
-      # Mediawiki configuration file for this instance
-      file { 'LocalSettings.php':
-        path     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-        owner    => 'www-data',
-        group    => 'www-data',
-        content  => template('mediawiki/LocalSettings.php.erb'),
-        mode     => '0700',
-        require  => File["${mediawiki_conf_dir}/${name}"],
       }
 
       # Each instance needs a separate folder to upload images
@@ -95,6 +108,7 @@ define mediawiki::instance (
         require  => File["${mediawiki_conf_dir}/${name}"],
       }
 
+      # NOTE: swap title and param
       # Ensure that mediawiki configuration files are included in each instance.
       mediawiki::files { $mediawiki_install_files:
         instance_name => $name,
@@ -108,16 +122,7 @@ define mediawiki::instance (
         group    => 'root',
         target   => "${mediawiki_conf_dir}/${name}",
       }
-
-      # Create a database for this mediawiki instance
-      mysql::db { $db_name:
-        user     => $db_user,
-        password => $db_password,
-        host     => 'localhost',
-        grant    => ['all'],
-        ensure   => 'present',
-      }
-      
+     
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
         port         => $port,

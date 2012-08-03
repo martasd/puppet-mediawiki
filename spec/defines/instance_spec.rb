@@ -43,14 +43,7 @@ describe 'mediawiki::instance', :type => :define do
         'mode'     => '0755',
       )
       
-      should contain_file('LocalSettings.php').with(
-        'path'     => '/etc/mediawiki/dummy_instance/LocalSettings.php',
-        'owner'    => 'www-data',
-        'group'    => 'www-data',
-        'mode'     => '0700',
-      )
-      
-      should contain_file('images').with(
+     should contain_file('images').with(
         'ensure'   => 'directory',
         'path'     => '/etc/mediawiki/dummy_instance/images',
         'owner'    => 'root',
@@ -79,14 +72,6 @@ describe 'mediawiki::instance', :type => :define do
         'path'     => '/var/www/wikis/dummy_instance',
         'owner'    => 'root',
         'group'    => 'root',
-      )
-      
-      should contain_mysql__db('dummy_instance').with(
-        'user'     => 'dummy_instance_user',
-        'password' => 'lengthy_password',
-        'host'     => 'localhost',
-        'grant'    => 'all',
-        'ensure'   => 'present',
       )
 
       should contain_apache__vhost('dummy_instance').with(
@@ -136,14 +121,7 @@ describe 'mediawiki::instance', :type => :define do
         'group'    => 'root',
         'mode'     => '0755',
       )
-      
-      should contain_file('LocalSettings.php').with(
-        'path'     => '/etc/mediawiki/dummy_instance/LocalSettings.php',
-        'owner'    => 'www-data',
-        'group'    => 'www-data',
-        'mode'     => '0700',
-      )
-      
+     
       should contain_file('images').with(
         'ensure'   => 'directory',
         'path'     => '/etc/mediawiki/dummy_instance/images',
@@ -175,14 +153,7 @@ describe 'mediawiki::instance', :type => :define do
         'group'    => 'root',
       )
       
-      should contain_mysql__db('dummy_db').with(
-        'user'     => 'dummy_user',
-        'password' => 'super_long_password',
-        'host'     => 'localhost',
-        'grant'    => 'all',
-        'ensure'   => 'present',
-      ) 
-       
+      
       should contain_apache__vhost('dummy_instance').with(
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
