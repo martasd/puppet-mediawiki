@@ -57,6 +57,7 @@ describe 'mediawiki', :type => :class do
     it {
       should contain_class('mediawiki')
       should contain_class('apache')
+      should contain_class('apache::php')
       should contain_class('mediawiki::params')
       should contain_package('php5').with('ensure' => 'installed')
       should contain_package('php5-mysql').with('ensure' => 'installed')

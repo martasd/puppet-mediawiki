@@ -39,9 +39,11 @@ class mediawiki (
   $max_memory     = '2048'
   ) {
 
-  include apache
   include mediawiki::params
 
+  class { 'apache': }
+  class { 'apache::php': }
+  
   package { $mediawiki::params::packages:
     ensure => $package_ensure,
   }
