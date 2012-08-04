@@ -67,15 +67,13 @@ define mediawiki::instance (
     'present', 'absent': {
       
       exec { 'mediawiki_install_script':
-        subscribe   => File['wiki_instance_dir'],
-        unless      => "test -f ${mediawiki_conf_dir}/${name}/LocalSettings.php",
         cwd         => "${mediawiki_install_dir}/maintenance",
-        provider    => shell,
-        # make sure to make the paths absolute 
+        # unless      => "/usr/bin/test -f ${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         command     => "/usr/bin/php install.php                  \
                         --pass puppet                             \
                         --email ${admin_email}                    \
-                        --scriptpath '/${name}'                   \
+                        --scriptpath /${name}                     \
                         --dbtype mysql                            \
                         --dbserver localhost                      \
                         --installdbuser root                      \
@@ -83,15 +81,16 @@ define mediawiki::instance (
                         --dbname ${db_name}                       \
                         --dbuser ${db_user}                       \
                         --dbpass ${db_password}                   \
-                        --confpath '{mediawiki_conf_dir}/${name}' \
+                        --confpath ${mediawiki_conf_dir}/${name}  \
                         --lang en                                 \
                         ${name}                                   \
                         admin",
+        subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
   
-      file { 'wiki_instance_dir':
+      # MediaWiki instance directory
+      file { "${mediawiki_conf_dir}/${name}":
         ensure   => directory,
-        path     => "${mediawiki_conf_dir}/${name}",
         owner    => 'root',
         group    => 'root',
         mode     => '0755',
@@ -99,28 +98,26 @@ define mediawiki::instance (
       }
 
       # Each instance needs a separate folder to upload images
-      file { 'images':
+      file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        path     => "${mediawiki_conf_dir}/${name}/images",
         owner    => 'root',
         group    => 'www-data',
         mode     => '0664',
         require  => File["${mediawiki_conf_dir}/${name}"],
       }
 
-      # NOTE: swap title and param
       # Ensure that mediawiki configuration files are included in each instance.
       mediawiki::files { $mediawiki_install_files:
         instance_name => $name,
       }
 
       # Symlink for the mediawiki instance directory
-      file { 'wiki_instance_dir_link':
+      file { "${instance_root_dir}/${name}":
         ensure   => link,
-        path     => "${instance_root_dir}/${name}",
         owner    => 'root',
         group    => 'root',
         target   => "${mediawiki_conf_dir}/${name}",
+        require  => File["${mediawiki_conf_dir}/${name}/images"],
       }
      
       # Each instance has a separate vhost configuration
@@ -134,17 +131,15 @@ define mediawiki::instance (
     }
     'deleted': {
       
-      # Remove the instance directory if it is present
-      file { 'wiki_instance_dir':
+      # Remove the MediaWiki instance directory if it is present
+      file { "${mediawiki_conf_dir}/${name}":
         ensure  => absent,
-        path    => "${mediawiki_conf_dir}/${name}",
         recurse => true,
       }
 
       # Remove the symlink for the mediawiki instance directory
-      file { 'wiki_instance_dir_link':
+      file { "${instance_root_dir}/${name}":
         ensure   => absent,
-        path     => "${instance_root_dir}/${name}",
         recurse  => true,
       }
 
