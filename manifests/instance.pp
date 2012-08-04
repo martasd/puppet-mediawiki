@@ -56,6 +56,7 @@ define mediawiki::instance (
   $admin_email             = $mediawiki::admin_email
   $db_root_password        = $mediawiki::db_root_password
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
+  $mediawiki_install_dir   = $mediawiki::params::install_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
   $instance_root_dir       = $mediawiki::params::instance_root_dir
   $apache_daemon           = $mediawiki::params::apache_daemon
@@ -68,7 +69,7 @@ define mediawiki::instance (
       exec { 'mediawiki_install_script':
         subscribe   => File['wiki_instance_dir'],
         unless      => "test -f ${mediawiki_conf_dir}/${name}/LocalSettings.php",
-        cwd         => "${install_dir}/maintenance",
+        cwd         => "${mediawiki_install_dir}/maintenance",
         provider    => shell,
         # make sure to make the paths absolute 
         command     => "/usr/bin/php install.php                  \
@@ -84,7 +85,6 @@ define mediawiki::instance (
                         --dbpass ${db_password}                   \
                         --confpath '{mediawiki_conf_dir}/${name}' \
                         --lang en                                 \
-                        # --dbpassfile                            \
                         ${name}                                   \
                         admin",
       }
