@@ -35,17 +35,15 @@ describe 'mediawiki::instance', :type => :define do
     it 'should have enabled the instance' do
       should contain_class('mediawiki::params')
       
-      should contain_file('wiki_instance_dir').with( 
+      should contain_file('/etc/mediawiki/dummy_instance').with( 
         'ensure'   => 'directory',
-        'path'     => '/etc/mediawiki/dummy_instance',                                            
         'owner'    => 'root',
         'group'    => 'root',
         'mode'     => '0755',
       )
       
-     should contain_file('images').with(
+     should contain_file('/etc/mediawiki/dummy_instance/images').with(
         'ensure'   => 'directory',
-        'path'     => '/etc/mediawiki/dummy_instance/images',
         'owner'    => 'root',
         'group'    => 'www-data',
         'mode'     => '0664',
@@ -67,9 +65,8 @@ describe 'mediawiki::instance', :type => :define do
        )
       end
       
-      should contain_file('wiki_instance_dir_link').with(
+      should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'link',
-        'path'     => '/var/www/wikis/dummy_instance',
         'owner'    => 'root',
         'group'    => 'root',
       )
@@ -114,17 +111,15 @@ describe 'mediawiki::instance', :type => :define do
       should contain_class('mediawiki')
       should contain_class('mediawiki::params')
       
-      should contain_file('wiki_instance_dir').with( 
+      should contain_file('/etc/mediawiki/dummy_instance').with( 
         'ensure'   => 'directory',
-        'path'     => '/etc/mediawiki/dummy_instance',                                            
         'owner'    => 'root',
         'group'    => 'root',
         'mode'     => '0755',
       )
      
-      should contain_file('images').with(
+      should contain_file('/etc/mediawiki/dummy_instance/images').with(
         'ensure'   => 'directory',
-        'path'     => '/etc/mediawiki/dummy_instance/images',
         'owner'    => 'root',
         'group'    => 'www-data',
         'mode'     => '0664',
@@ -146,9 +141,8 @@ describe 'mediawiki::instance', :type => :define do
       )
       end 
       
-      should contain_file('wiki_instance_dir_link').with(
+      should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'link',
-        'path'     => '/var/www/wikis/dummy_instance',
         'owner'    => 'root',
         'group'    => 'root',
       )
@@ -174,15 +168,13 @@ describe 'mediawiki::instance', :type => :define do
         'host'     => 'localhost',
       ) 
       
-      should contain_file('wiki_instance_dir').with( 
+      should contain_file('/etc/mediawiki/dummy_instance').with( 
         'ensure'   => 'absent',
-        'path'     => '/etc/mediawiki/dummy_instance',                                            
       )
      
       
-      should contain_file('wiki_instance_dir_link').with(
+      should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'absent',
-        'path'     => '/var/www/wikis/dummy_instance',
       )
       
       should contain_mysql__db('dummy_db').with(
