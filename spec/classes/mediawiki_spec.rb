@@ -13,6 +13,7 @@ describe 'mediawiki', :type => :class do
 
     let(:params) do
       {
+        :server_name      => 'www.example.com',
         :admin_email      => 'admin@puppetlabs.com',
         :db_root_password => 'long_password'
       }
@@ -47,6 +48,7 @@ describe 'mediawiki', :type => :class do
 
     let(:params) do
       {
+        :server_name      => 'www.example.com',
         :admin_email      => 'admin@puppetlabs.com',
         :db_root_password => 'long_password',
         :package_ensure   => 'installed',
@@ -84,6 +86,7 @@ describe 'mediawiki', :type => :class do
     end
     let(:params) do
       {
+        :server_name      => 'www.example.com',
         :admin_email      => 'admin@puppetlabs.com',
         :db_root_password => 'long_password'
       }
@@ -99,6 +102,7 @@ describe 'mediawiki', :type => :class do
     end
     let(:params) do
       {
+        :server_name      => 'www.example.com',
         :admin_email      => 'admin@puppetlabs.com',
         :db_root_password => 'long_password'
       }

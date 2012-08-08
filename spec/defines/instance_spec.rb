@@ -11,7 +11,9 @@ describe 'mediawiki::instance', :type => :define do
 
   context 'using default parameters on Debian' do
     let(:pre_condition) do
-      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+      'class { "mediawiki": 
+         server_name      => "www.example.com",
+         admin_email      => "admin@puppetlabs.com",
          db_root_password => "really_really_long_password" }'
     end
     
@@ -46,7 +48,7 @@ describe 'mediawiki::instance', :type => :define do
         'ensure'   => 'directory',
         'owner'    => 'root',
         'group'    => 'www-data',
-        'mode'     => '0664',
+        'mode'     => '0755',
       )
       
       ['api.php', 'config', 'extensions','img_auth.php',
@@ -83,7 +85,9 @@ describe 'mediawiki::instance', :type => :define do
   
   context 'using custom parameters on Debian' do
     let(:pre_condition) do
-      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+      'class { "mediawiki": 
+         server_name      => "www.example.com",
+         admin_email      => "admin@puppetlabs.com",
          db_root_password => "really_really_long_password" }'
     end
     
@@ -122,7 +126,7 @@ describe 'mediawiki::instance', :type => :define do
         'ensure'   => 'directory',
         'owner'    => 'root',
         'group'    => 'www-data',
-        'mode'     => '0664',
+        'mode'     => '0755',
       )
       
       ['api.php', 'config', 'extensions','img_auth.php',
@@ -199,7 +203,9 @@ describe 'mediawiki::instance', :type => :define do
   # Add additional contexts for different Ubuntu and CentOS
   context 'using default parameters on Ubuntu' do
     let(:pre_condition) do
-      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+      'class { "mediawiki": 
+         server_name      => "www.example.com",
+         admin_email      => "admin@puppetlabs.com",
          db_root_password => "really_really_long_password" }'
     end
     
@@ -219,7 +225,9 @@ describe 'mediawiki::instance', :type => :define do
   
   context 'using default parameters on CentOS and RedHat' do
     let(:pre_condition) do
-      'class { "mediawiki": admin_email => "admin@puppetlabs.com",
+      'class { "mediawiki": 
+         server_name      => "www.example.com",
+         admin_email      => "admin@puppetlabs.com",
          db_root_password => "really_really_long_password" }'
     end
     
