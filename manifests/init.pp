@@ -8,6 +8,7 @@
 #
 # [*admin_email*]      - email address Apache will display when rendering error page
 # [*db_root_password*] - password for mysql root user
+# [*server_name*]      - the host name of the server
 # [*package_ensure*]   - state of the package
 # [*max_memory*]       - a memcached memory limit
 #
@@ -16,6 +17,7 @@
 # class { 'mediawiki':
 #   admin_email      => 'admin@puppetlabs.com',
 #   db_root_password => 'really_really_long_password',
+#   server_name      => 'www.example.com',
 #   max_memory       => '1024'
 # }
 #
@@ -33,6 +35,7 @@
 # Copyright 2012 Martin Dluhos
 #
 class mediawiki (
+  $server_name,
   $admin_email,
   $db_root_password,
   $package_ensure = 'latest',
@@ -41,18 +44,21 @@ class mediawiki (
 
   include mediawiki::params
 
+  Class['mysql::server'] -> Class['mediawiki']
+  Class['mysql::config'] -> Class['mediawiki']
+  
   class { 'apache': }
   class { 'apache::php': }
   
-  package { $mediawiki::params::packages:
-    ensure => $package_ensure,
-  }
-
   # Manages the mysql server package and service by default
   class { 'mysql::server':
     config_hash => { 'root_password' => $db_root_password },
   }
 
+  package { $mediawiki::params::packages:
+    ensure  => $package_ensure,
+  }
+  
   # Not including problematic memcached module
   #class { 'memcached':
   #  max_memory => $max_memory,
@@ -67,6 +73,5 @@ class mediawiki (
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    require => Package['mediawiki'],
   }
 }
