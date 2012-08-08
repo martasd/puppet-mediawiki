@@ -49,12 +49,10 @@ define mediawiki::instance (
 
   include mediawiki::params
 
-  # mediawiki needs to be installed before a particular instance is created
-  Class['mediawiki'] -> Mediawiki::Instance[$name]
-
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
   $db_root_password        = $mediawiki::db_root_password
+  $server_name             = $mediawiki::server_name
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
   $mediawiki_install_dir   = $mediawiki::params::install_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
@@ -68,11 +66,12 @@ define mediawiki::instance (
       
       exec { 'mediawiki_install_script':
         cwd         => "${mediawiki_install_dir}/maintenance",
-        # unless      => "/usr/bin/test -f ${mediawiki_conf_dir}/${name}/LocalSettings.php",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        logoutput   => true, 
         command     => "/usr/bin/php install.php                  \
                         --pass puppet                             \
                         --email ${admin_email}                    \
+                        --server http://${server_name}            \
                         --scriptpath /${name}                     \
                         --dbtype mysql                            \
                         --dbserver localhost                      \
@@ -87,23 +86,24 @@ define mediawiki::instance (
                         admin",
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
-  
+
+      # Ensure resoure attributes common to all resources
+      File {
+        ensure => directory,
+        owner  => '0',
+        group  => '0',
+        mode   => '0755',
+      }
+        
       # MediaWiki instance directory
       file { "${mediawiki_conf_dir}/${name}":
         ensure   => directory,
-        owner    => 'root',
-        group    => 'root',
-        mode     => '0755',
-        require  => File["${mediawiki_conf_dir}"],
       }
 
       # Each instance needs a separate folder to upload images
       file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        owner    => 'root',
         group    => 'www-data',
-        mode     => '0664',
-        require  => File["${mediawiki_conf_dir}/${name}"],
       }
 
       # Ensure that mediawiki configuration files are included in each instance.
@@ -114,10 +114,8 @@ define mediawiki::instance (
       # Symlink for the mediawiki instance directory
       file { "${instance_root_dir}/${name}":
         ensure   => link,
-        owner    => 'root',
-        group    => 'root',
         target   => "${mediawiki_conf_dir}/${name}",
-        require  => File["${mediawiki_conf_dir}/${name}/images"],
+        require  => File["${mediawiki_conf_dir}/${name}"],
       }
      
       # Each instance has a separate vhost configuration
@@ -125,6 +123,7 @@ define mediawiki::instance (
         port         => $port,
         docroot      => $instance_root_dir,
         serveradmin  => $admin_email,
+        servername   => $server_name,
         template     => 'mediawiki/instance_vhost.erb',
         ensure       => $status,
       }
