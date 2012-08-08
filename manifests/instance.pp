@@ -8,7 +8,7 @@
 # [*db_user*]     - name of the mysql database user
 # [*db_password*] - password for the mysql database user
 # [*port*]        - port on mediawiki web server
-# [*status*]      - the current status of the wiki instance
+# [*ensure*]      - the current status of the wiki instance
 #                 - options: present, absent, deleted
 #
 # === Examples
@@ -24,7 +24,7 @@
 #   db_name     => 'wiki1',
 #   db_user     => 'wiki1_user',
 #   port        => '80',
-#   status      => 'present'
+#   ensure      => 'present'
 # }
 #
 # === Authors
@@ -40,11 +40,11 @@ define mediawiki::instance (
   $db_name = $name,
   $db_user = "${name}_user",
   $port    = '80',
-  $status  = 'present'
+  $ensure  = 'present'
   ) {
   
-  validate_re($status, [ '^present$', '^absent$', '^deleted$' ],
-  "${status} is not supported for status.
+  validate_re($ensure, [ '^present$', '^absent$', '^deleted$' ],
+  "${ensure} is not supported for ensure.
   Allowed values are 'present', 'absent', and 'deleted'.")
 
   include mediawiki::params
@@ -61,7 +61,7 @@ define mediawiki::instance (
 
   # Figure out how to improve db security (manually done by
   # mysql_secure_installation)
-  case $status {
+  case $ensure {
     'present', 'absent': {
       
       exec { 'mediawiki_install_script':
@@ -125,7 +125,7 @@ define mediawiki::instance (
         serveradmin  => $admin_email,
         servername   => $server_name,
         template     => 'mediawiki/instance_vhost.erb',
-        ensure       => $status,
+        ensure       => $ensure,
       }
     }
     'deleted': {

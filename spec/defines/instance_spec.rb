@@ -111,7 +111,7 @@ describe 'mediawiki::instance', :type => :define do
     end
     
     it 'should have disabled the instance' do
-      params.merge!({'status' => 'absent'})
+      params.merge!({'ensure' => 'absent'})
       should contain_class('mediawiki')
       should contain_class('mediawiki::params')
       
@@ -162,7 +162,7 @@ describe 'mediawiki::instance', :type => :define do
     end
     
     it 'should have deleted the instance' do
-      params.merge!({'status' => 'deleted'})
+      params.merge!({'ensure' => 'deleted'})
       should contain_class('mediawiki')
       should contain_class('mediawiki::params')
       

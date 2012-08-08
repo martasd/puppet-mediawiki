@@ -22,7 +22,7 @@ Next, create an individual wiki instance:
       db_name     => 'wiki1',
       db_user     => 'wiki1_user',
       port        => '80',
-      status      => 'present'
+      ensure      => 'present'
     }
 
 Using this module, one can create multiple independent wiki instances. To create another wiki instance, add the following puppet code:
@@ -32,7 +32,7 @@ Using this module, one can create multiple independent wiki instances. To create
       db_name     => 'another_wiki',
       db_user     => 'another_wiki_user'
       port        => '80',
-      status      => 'present'
+      ensure      => 'present'
     }
 
 ## Reference
