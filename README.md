@@ -11,6 +11,7 @@ First, install the mediawiki package which will be used by all wiki instances:
     class { 'mediawiki':
       admin_email      => 'admin@puppetlabs.com',
       db_root_password => 'really_really_long_password',
+      server_name      => 'www.example.com',
       max_memory       => '1024'
     }
     
