@@ -9,9 +9,10 @@ This module deploys and manages multiple mediawiki instances using a single medi
 First, install the mediawiki package which will be used by all wiki instances:
 
     class { 'mediawiki':
+      server_name      => 'www.example.com',
       admin_email      => 'admin@puppetlabs.com',
       db_root_password => 'really_really_long_password',
-      server_name      => 'www.example.com',
+      doc_root         => '/var/www/wikis'
       max_memory       => '1024'
     }
     
@@ -34,6 +35,12 @@ Using this module, one can create multiple independent wiki instances. To create
       port        => '80',
       ensure      => 'present'
     }
+
+## Preconditions
+
+Since puppet cannot ensure that all parent directories exist you need to
+manage these yourself. Therefore, make sure that all parent directories of
+`doc_root` directory, an attribute of `mediawiki` class, exist.
 
 ## Reference
 

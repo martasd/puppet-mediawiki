@@ -51,6 +51,7 @@ describe 'mediawiki', :type => :class do
         :server_name      => 'www.example.com',
         :admin_email      => 'admin@puppetlabs.com',
         :db_root_password => 'long_password',
+        :doc_root         => '/var/www/wikis',
         :package_ensure   => 'installed',
         :max_memory       => '1024'
       }

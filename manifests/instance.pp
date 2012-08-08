@@ -53,10 +53,10 @@ define mediawiki::instance (
   $admin_email             = $mediawiki::admin_email
   $db_root_password        = $mediawiki::db_root_password
   $server_name             = $mediawiki::server_name
+  $doc_root                = $mediawiki::doc_root
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
   $mediawiki_install_dir   = $mediawiki::params::install_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
-  $instance_root_dir       = $mediawiki::params::instance_root_dir
   $apache_daemon           = $mediawiki::params::apache_daemon
 
   # Figure out how to improve db security (manually done by
@@ -112,7 +112,7 @@ define mediawiki::instance (
       }
 
       # Symlink for the mediawiki instance directory
-      file { "${instance_root_dir}/${name}":
+      file { "${doc_root}/${name}":
         ensure   => link,
         target   => "${mediawiki_conf_dir}/${name}",
         require  => File["${mediawiki_conf_dir}/${name}"],
@@ -121,7 +121,7 @@ define mediawiki::instance (
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
         port         => $port,
-        docroot      => $instance_root_dir,
+        docroot      => $doc_root,
         serveradmin  => $admin_email,
         servername   => $server_name,
         template     => 'mediawiki/instance_vhost.erb',
@@ -137,7 +137,7 @@ define mediawiki::instance (
       }
 
       # Remove the symlink for the mediawiki instance directory
-      file { "${instance_root_dir}/${name}":
+      file { "${doc_root}/${name}":
         ensure   => absent,
         recurse  => true,
       }
@@ -152,7 +152,7 @@ define mediawiki::instance (
 
       apache::vhost { $name:
         port         => $port,
-        docroot      => $instance_root_dir,
+        docroot      => $doc_root,
         serveradmin  => $admin_email,
         template     => 'mediawiki/instance_vhost.erb',
         ensure       => 'absent',

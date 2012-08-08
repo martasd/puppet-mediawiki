@@ -29,7 +29,6 @@ class mediawiki::params {
                              'mediawiki']
       $install_dir        = '/usr/share/mediawiki'
       $conf_dir           = '/etc/mediawiki'
-      $instance_root_dir  = '/var/www/wikis'
       $apache_daemon      = '/usr/sbin/apache2'
       $installation_files = ['api.php', 'config', 'extensions','img_auth.php',
                              'includes', 'index.php', 'load.php', 'languages',
@@ -43,7 +42,6 @@ class mediawiki::params {
                              'mediawiki']
       $install_dir        = '/usr/share/mediawiki'
       $conf_dir           = '/etc/mediawiki'
-      $instance_root_dir  = '/var/www/wikis'
       $apache_daemon      = '/usr/sbin/apache2'
       $installation_files = ['api.php', 'config', 'extensions', 'img_auth.php',
                              'includes', 'index.php', 'install-utils.inc',

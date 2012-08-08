@@ -6,18 +6,19 @@
 #
 # === Parameters
 #
+# [*server_name*]      - the host name of the server
 # [*admin_email*]      - email address Apache will display when rendering error page
 # [*db_root_password*] - password for mysql root user
-# [*server_name*]      - the host name of the server
+# [*doc_root*]         - the DocumentRoot directory used by Apache
 # [*package_ensure*]   - state of the package
 # [*max_memory*]       - a memcached memory limit
 #
 # === Examples
 #
 # class { 'mediawiki':
+#   server_name      => 'www.example.com',
 #   admin_email      => 'admin@puppetlabs.com',
 #   db_root_password => 'really_really_long_password',
-#   server_name      => 'www.example.com',
 #   max_memory       => '1024'
 # }
 #
@@ -38,6 +39,7 @@ class mediawiki (
   $server_name,
   $admin_email,
   $db_root_password,
+  $doc_root       = '/var/www/wikis',
   $package_ensure = 'latest',
   $max_memory     = '2048'
   ) {
