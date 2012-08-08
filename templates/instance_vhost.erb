@@ -2,12 +2,11 @@
 ## THIS FILE IS MANAGED BY PUPPET. ANY MANUAL CHANGES WILL BE OVERWRITTEN
 ###############################################################################
 
-<VirtualHost *:80>
-	     DocumentRoot /var/www/wikis
+<VirtualHost *:<%= port %>>
+	     DocumentRoot <%= docroot %>
 	     DirectoryIndex index.php index.html
 	     
-	     ServerName localhost
-	     ServerAlias *.localhost
+	     ServerName <%= server_name %>
 
 	     <Directory <%= name%>>
 	     		Options +FollowSymLinks
