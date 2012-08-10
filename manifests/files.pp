@@ -1,16 +1,16 @@
 # == Define: mediawiki::files
 #
-# This defined type makes it easier to manage mediawiki's configuration files.
+# This defined type manages symbolic links to mediawiki configuration files.
 # WARNING: Only for internal use!
 #
 # === Parameters
 #
-# [*instance_name*] - the name of mediawiki instance (and its config directory)
+# [*target_dir*]    - mediawiki installation directory
 #
 # === Examples
 #
-# mediawiki::files { $mediawiki_install_files:
-#   instance_name => 'wiki1',
+#  mediawiki::files { $link_files:
+#    target_dir => $target_dir,
 # }
 #
 # === Authors
@@ -22,21 +22,13 @@
 # Copyright 2012 Martin Dluhos
 #
 define mediawiki::files (
-  $instance_name,
+  $target_dir
   ) {
-
-  include mediawiki::params
-  
-  $install_dir = $mediawiki::params::install_dir
-  $target_dir  = "${mediawiki::params::conf_dir}/${instance_name}"
-
   file { $name:
     ensure  => link,
-    path    => "${target_dir}/${name}",
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    target  => "${install_dir}/${name}",
-    require => File[$target_dir],
+    target  => gen_target_path($target_dir, $name),
   }
 }

@@ -64,7 +64,7 @@ define mediawiki::instance (
   case $ensure {
     'present', 'absent': {
       
-      exec { 'mediawiki_install_script':
+      exec { "${name}-install_script":
         cwd         => "${mediawiki_install_dir}/maintenance",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         logoutput   => true, 
@@ -105,10 +105,12 @@ define mediawiki::instance (
         ensure   => directory,
         group    => 'www-data',
       }
-
+      
       # Ensure that mediawiki configuration files are included in each instance.
-      mediawiki::files { $mediawiki_install_files:
-        instance_name => $name,
+      mediawiki::symlinks { $name:
+        conf_dir      => $mediawiki_conf_dir,
+        install_files => $mediawiki_install_files,
+        target_dir    => $mediawiki_install_dir,
       }
 
       # Symlink for the mediawiki instance directory

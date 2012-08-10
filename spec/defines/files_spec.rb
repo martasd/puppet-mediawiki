@@ -12,19 +12,17 @@ describe 'mediawiki::files', :type => :define do
     
     let(:params) do
       {
-        :instance_name => 'dummy_instance'
+        :target_dir => '/usr/share/mediawiki'
       }
     end
     
     let(:title) do
-      'api.php'
+      '/etc/mediawiki/dummy_instance/api.php'
     end 
     
     it {
-      should contain_class('mediawiki::params')
-      should contain_mediawiki__files('api.php')
       
-      should contain_file('api.php').with(
+      should contain_file('/etc/mediawiki/dummy_instance/api.php').with(
         'ensure' => 'link',
         'path'   => '/etc/mediawiki/dummy_instance/api.php',                                  
         'owner'  => 'root',

@@ -51,21 +51,16 @@ describe 'mediawiki::instance', :type => :define do
         'mode'     => '0755',
       )
       
-      ['api.php', 'config', 'extensions','img_auth.php',
-       'includes', 'index.php', 'load.php', 'languages',
-       'maintenance', 'mw-config', 'opensearch_desc.php',
-       'profileinfo.php', 'redirect.php', 'redirect.phtml',
-       'resources', 'skins', 'thumb_handler.php',
-       'thumb.php', 'wiki.phtml'].each do |f| 
-      should contain_file(f).with(
-        'ensure'  => 'link',
-        'path'    => "/etc/mediawiki/dummy_instance/#{f}", 
-        'owner'   => 'root',
-        'group'   => 'root',
-        'mode'    => '0755',
-        'target'  => "/usr/share/mediawiki/#{f}",
+      should contain_mediawiki__symlinks('dummy_instance').with(
+        'conf_dir'      => '/etc/mediawiki',
+        'install_files' => ['api.php', 'config', 'extensions','img_auth.php',
+                           'includes', 'index.php', 'load.php', 'languages',
+                           'maintenance', 'mw-config', 'opensearch_desc.php',
+                           'profileinfo.php', 'redirect.php', 'redirect.phtml',
+                           'resources', 'skins', 'thumb_handler.php',
+                           'thumb.php', 'wiki.phtml'],
+        'target_dir'    => '/usr/share/mediawiki',
        )
-      end
       
       should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'link',
@@ -129,22 +124,17 @@ describe 'mediawiki::instance', :type => :define do
         'mode'     => '0755',
       )
       
-      ['api.php', 'config', 'extensions','img_auth.php',
-       'includes', 'index.php', 'load.php', 'languages',
-       'maintenance', 'mw-config', 'opensearch_desc.php',
-       'profileinfo.php', 'redirect.php', 'redirect.phtml',
-       'resources', 'skins', 'thumb_handler.php',
-       'thumb.php', 'wiki.phtml'].each do |f| 
-      should contain_file(f).with(
-        'ensure'  => 'link',
-        'path'    => "/etc/mediawiki/dummy_instance/#{f}", 
-        'owner'   => 'root',
-        'group'   => 'root',
-        'mode'    => '0755',
-        'target'  => "/usr/share/mediawiki/#{f}",
-      )
-      end 
-      
+      should contain_mediawiki__symlinks('dummy_instance').with(
+        'conf_dir'      => '/etc/mediawiki',
+        'install_files' => ['api.php', 'config', 'extensions','img_auth.php',
+                           'includes', 'index.php', 'load.php', 'languages',
+                           'maintenance', 'mw-config', 'opensearch_desc.php',
+                           'profileinfo.php', 'redirect.php', 'redirect.phtml',
+                           'resources', 'skins', 'thumb_handler.php',
+                           'thumb.php', 'wiki.phtml'],
+        'target_dir'    => '/usr/share/mediawiki',
+       )
+       
       should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'link',
         'owner'    => 'root',
