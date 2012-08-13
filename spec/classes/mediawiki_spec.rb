@@ -34,6 +34,7 @@ describe 'mediawiki', :type => :class do
         'owner'   => 'root',
         'group'   => 'root',
         'mode'    => '0755',
+        'require' => 'Package[mediawiki]'
       )
     }
   end

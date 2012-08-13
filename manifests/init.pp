@@ -66,8 +66,6 @@ class mediawiki (
   #  max_memory => $max_memory,
   #}
 
-  # Include optional packages (see mediawiki_ubuntu.txt)
-
   # Make sure the directories and files common for all instances are included
   file { 'mediawiki_conf_dir':
     ensure  => 'directory',
@@ -75,5 +73,6 @@ class mediawiki (
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
+    require => Package[$mediawiki::params::packages],
   }
 }

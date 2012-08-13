@@ -48,6 +48,7 @@ define mediawiki::instance (
   Allowed values are 'present', 'absent', and 'deleted'.")
 
   include mediawiki::params
+  Class['mediawiki'] -> Mediawiki::Instance[$name]
 
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
