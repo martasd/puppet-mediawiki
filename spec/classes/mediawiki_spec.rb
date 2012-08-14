@@ -25,7 +25,6 @@ describe 'mediawiki', :type => :class do
       should contain_class('mediawiki::params')
       should contain_package('php5').with('ensure' => 'latest')
       should contain_package('php5-mysql').with('ensure'=> 'latest')
-      should contain_package('mediawiki').with('ensure' => 'latest')
       should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
       #should contain_class('memcached').with(:max_memory => '2048')
       should contain_file('mediawiki_conf_dir').with(
@@ -34,7 +33,7 @@ describe 'mediawiki', :type => :class do
         'owner'   => 'root',
         'group'   => 'root',
         'mode'    => '0755',
-        'require' => 'Package[mediawiki]'
+        'require' => '[Package[php5]{:name=>"php5"}, Package[php5-mysql]{:name=>"php5-mysql"}, Package[wget]{:name=>"wget"}]'
       )
     }
   end
@@ -53,6 +52,7 @@ describe 'mediawiki', :type => :class do
         :admin_email      => 'admin@puppetlabs.com',
         :db_root_password => 'long_password',
         :doc_root         => '/var/www/wikis',
+        :tarball_url      => 'http://download.wikimedia.org/mediawiki/1.19/mediawiki-1.19.1.tar.gz',
         :package_ensure   => 'installed',
         :max_memory       => '1024'
       }
@@ -65,7 +65,6 @@ describe 'mediawiki', :type => :class do
       should contain_class('mediawiki::params')
       should contain_package('php5').with('ensure' => 'installed')
       should contain_package('php5-mysql').with('ensure' => 'installed')
-      should contain_package('mediawiki').with('ensure' => 'installed')
       should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
       #should contain_class('memcached').with(:max_memory => '1024')
       should contain_file('mediawiki_conf_dir').with(

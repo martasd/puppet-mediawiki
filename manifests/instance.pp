@@ -57,8 +57,8 @@ define mediawiki::instance (
   $db_root_password        = $mediawiki::db_root_password
   $server_name             = $mediawiki::server_name
   $doc_root                = $mediawiki::doc_root
+  $mediawiki_install_path  = $mediawiki::mediawiki_install_path
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
-  $mediawiki_install_dir   = $mediawiki::params::install_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
   $apache_daemon           = $mediawiki::params::apache_daemon
 
@@ -68,9 +68,7 @@ define mediawiki::instance (
     'present', 'absent': {
       
       exec { "${name}-install_script":
-        cwd         => "${mediawiki_install_dir}/maintenance",
-        creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
-        logoutput   => true, 
+        cwd         => "${mediawiki_install_path}/maintenance",
         command     => "/usr/bin/php install.php                  \
                         --pass puppet                             \
                         --email ${admin_email}                    \
@@ -87,6 +85,8 @@ define mediawiki::instance (
                         --lang en                                 \
                         ${name}                                   \
                         admin",
+        logoutput   => true, 
+        creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
 
@@ -113,7 +113,7 @@ define mediawiki::instance (
       mediawiki::symlinks { $name:
         conf_dir      => $mediawiki_conf_dir,
         install_files => $mediawiki_install_files,
-        target_dir    => $mediawiki_install_dir,
+        target_dir    => $mediawiki_install_path,
       }
 
       # Symlink for the mediawiki instance directory
