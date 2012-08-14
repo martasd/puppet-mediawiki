@@ -48,6 +48,8 @@ define mediawiki::instance (
   Allowed values are 'present', 'absent', and 'deleted'.")
 
   include mediawiki::params
+
+  # MediaWiki needs to be installed before a particular instance is created
   Class['mediawiki'] -> Mediawiki::Instance[$name]
 
   # Make the configuration file more readable
@@ -157,6 +159,7 @@ define mediawiki::instance (
         port         => $port,
         docroot      => $doc_root,
         serveradmin  => $admin_email,
+        servername   => $server_name,
         template     => 'mediawiki/instance_vhost.erb',
         ensure       => 'absent',
       } 

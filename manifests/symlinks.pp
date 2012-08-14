@@ -33,7 +33,7 @@ define mediawiki::symlinks (
   
   # Generate an array of symlink names
   $link_files = gen_uniq_path($conf_dir, $name, $install_files) 
-  
+  #$link_files = regsubst($install_files, "*", "${conf_dir}/${name}/\\1", "G")   
   mediawiki::files { $link_files:
     target_dir => $target_dir,
   }
