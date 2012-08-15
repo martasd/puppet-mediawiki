@@ -69,7 +69,7 @@ define mediawiki::instance (
       
       exec { "${name}-install_script":
         cwd         => "${mediawiki_install_path}/maintenance",
-        command     => "/usr/bin/php install.php                  \
+        command     => "/usr/bin/php install.php ${name} admin    \
                         --pass puppet                             \
                         --email ${admin_email}                    \
                         --server http://${server_name}            \
@@ -82,9 +82,8 @@ define mediawiki::instance (
                         --dbuser ${db_user}                       \
                         --dbpass ${db_password}                   \
                         --confpath ${mediawiki_conf_dir}/${name}  \
-                        --lang en                                 \
-                        ${name}                                   \
-                        admin",
+                        --lang en",
+                        
         logoutput   => true, 
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
