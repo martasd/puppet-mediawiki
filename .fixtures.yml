@@ -1,6 +1,6 @@
 fixtures:
   repositories:
-    apache: git://github.com/martasd/puppetlabs-apache.git
+    apache: git://github.com/puppetlabs/puppetlabs-apache.git
     mysql: git://github.com/martasd/puppetlabs-mysql.git
     memcached: git://github.com/saz/puppet-memcached.git
     stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git

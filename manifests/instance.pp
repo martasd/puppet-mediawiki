@@ -87,7 +87,7 @@ define mediawiki::instance (
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
 
-      # Ensure resoure attributes common to all resources
+      # Ensure resource attributes common to all resources
       File {
         ensure => directory,
         owner  => 'root',
@@ -104,8 +104,8 @@ define mediawiki::instance (
       file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
         group => $::operatingsystem ? {
-          /(i?)(redhat|centos)/ => 'apache',
-          /(i?)(debian|ubuntu)/ => 'www-data',
+          /(?i)(redhat|centos)/ => 'apache',
+          /(?i)(debian|ubuntu)/ => 'www-data',
           default               => undef,
         }
       }
