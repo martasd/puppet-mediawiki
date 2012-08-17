@@ -59,7 +59,8 @@ class mediawiki (
   Class['mysql::config'] -> Class['mediawiki']
   
   class { 'apache': }
-  class { 'apache::php': }
+  class { 'apache::mod::php': }
+  
   
   # Manages the mysql server package and service by default
   class { 'mysql::server':
@@ -84,7 +85,6 @@ class mediawiki (
   exec { "get-mediawiki":
     cwd       => $web_dir,
     command   => "/usr/bin/wget ${tarball_url}",
-    logoutput => true, 
     creates   => "${web_dir}/${tarball_name}",
     subscribe => File['mediawiki_conf_dir'],
   }
@@ -92,7 +92,6 @@ class mediawiki (
   exec { "unpack-mediawiki":
     cwd       => $web_dir,
     command   => "/bin/tar -xvzf ${tarball_name}",
-    logoutput => true, 
     creates   => $mediawiki_install_path,
     subscribe => Exec['get-mediawiki'],
   }

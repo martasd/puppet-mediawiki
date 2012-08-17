@@ -83,8 +83,6 @@ define mediawiki::instance (
                         --dbpass ${db_password}                   \
                         --confpath ${mediawiki_conf_dir}/${name}  \
                         --lang en",
-                        
-        logoutput   => true, 
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
@@ -105,7 +103,11 @@ define mediawiki::instance (
       # Each instance needs a separate folder to upload images
       file { "${mediawiki_conf_dir}/${name}/images":
         ensure   => directory,
-        group    => 'www-data',
+        group => $::operatingsystem ? {
+          /(i?)(redhat|centos)/ => 'apache',
+          /(i?)(debian|ubuntu)/ => 'www-data',
+          default               => undef,
+        }
       }
       
       # Ensure that mediawiki configuration files are included in each instance.
