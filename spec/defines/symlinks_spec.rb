@@ -22,11 +22,15 @@ describe 'mediawiki::symlinks', :type => :define do
       'dummy_instance'
     end
     
-    #it {
-    #  should contain_mediawiki__files(['/etc/mediawiki/dummy_instance/api.php', 
-    #                                   '/etc/mediawiki/dummy_instance/config', 
-    #                                   '/etc/mediawiki/dummy_instance/extensions',
-    #                                   '/etc/mediawiki/dummy_instance/img_auth.php'])
-    #}
+    it {
+      should contain_mediawiki__files('/etc/mediawiki/dummy_instance/api.php').with(
+         'target_dir' => '/usr/share/mediawiki')
+      should contain_mediawiki__files('/etc/mediawiki/dummy_instance/config').with(
+         'target_dir' => '/usr/share/mediawiki')
+      should contain_mediawiki__files('/etc/mediawiki/dummy_instance/extensions').with(
+         'target_dir' => '/usr/share/mediawiki')
+      should contain_mediawiki__files('/etc/mediawiki/dummy_instance/img_auth.php').with(
+         'target_dir' => '/usr/share/mediawiki')
+    }
   end
 end
