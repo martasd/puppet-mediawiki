@@ -140,6 +140,8 @@ define mediawiki::instance (
       file { "${mediawiki_conf_dir}/${name}":
         ensure  => absent,
         recurse => true,
+        purge   => true,
+        force   => true,
       }
 
       # Remove the symlink for the mediawiki instance directory
