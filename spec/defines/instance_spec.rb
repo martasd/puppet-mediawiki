@@ -97,7 +97,7 @@ describe 'mediawiki::instance', :type => :define do
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
-        'template'     => 'mediawiki/instance_vhost.erb',
+        'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'present',
       )
     end
@@ -196,7 +196,7 @@ describe 'mediawiki::instance', :type => :define do
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
-        'template'     => 'mediawiki/instance_vhost.erb',
+        'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'absent',
       ) 
     end
@@ -233,7 +233,7 @@ describe 'mediawiki::instance', :type => :define do
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
-        'template'     => 'mediawiki/instance_vhost.erb',
+        'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'absent',
       ) 
     end

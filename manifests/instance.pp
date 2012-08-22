@@ -130,7 +130,6 @@ define mediawiki::instance (
         docroot      => $doc_root,
         serveradmin  => $admin_email,
         servername   => $server_name,
-        template     => 'mediawiki/instance_vhost.erb',
         ensure       => $ensure,
       }
     }
