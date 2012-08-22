@@ -96,8 +96,8 @@ class mediawiki (
     subscribe => Exec['get-mediawiki'],
   }
   
-  # Not including problematic memcached module
-  #class { 'memcached':
-  #  max_memory => $max_memory,
-  #}
+  class { 'memcached':
+    max_memory => $max_memory,
+    max_connections => '1024',
+  }
 } 

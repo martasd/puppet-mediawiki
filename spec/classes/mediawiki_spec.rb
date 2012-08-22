@@ -7,7 +7,8 @@ describe 'mediawiki', :type => :class do
     let(:facts) do
       {
         :osfamily => 'Debian',
-        :operatingsystem => 'Debian'
+        :operatingsystem => 'Debian',
+        :processorcount => 1
       }
     end
 
@@ -27,7 +28,7 @@ describe 'mediawiki', :type => :class do
       should contain_package('php5').with('ensure' => 'latest')
       should contain_package('php5-mysql').with('ensure'=> 'latest')
       should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
-      #should contain_class('memcached').with(:max_memory => '2048')
+      should contain_class('memcached').with('max_memory' => '2048')
       should contain_file('mediawiki_conf_dir').with(
         'ensure'  => 'directory',
         'path'    => '/etc/mediawiki',
@@ -43,7 +44,8 @@ describe 'mediawiki', :type => :class do
     let(:facts) do
       {
         :osfamily => 'Debian',
-        :operatingsystem => 'Debian'
+        :operatingsystem => 'Debian',
+        :processorcount => 1
       }
     end
 
@@ -67,7 +69,7 @@ describe 'mediawiki', :type => :class do
       should contain_package('php5').with('ensure' => 'installed')
       should contain_package('php5-mysql').with('ensure' => 'installed')
       should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
-      #should contain_class('memcached').with(:max_memory => '1024')
+      should contain_class('memcached').with('max_memory' => '1024')
       should contain_file('mediawiki_conf_dir').with(
         'ensure'  => 'directory',
         'path'    => '/etc/mediawiki',
@@ -83,7 +85,8 @@ describe 'mediawiki', :type => :class do
     let(:facts) do
       {
         :osfamily => 'Debian',
-        :operatingsystem => 'Ubuntu'
+        :operatingsystem => 'Ubuntu',
+        :processorcount => 1
       }
     end
     let(:params) do
@@ -99,7 +102,8 @@ describe 'mediawiki', :type => :class do
     let(:facts) do
       {
         :osfamily => 'RedHat',
-        :operatingsystem => 'RedHat'
+        :operatingsystem => 'RedHat',
+        :processorcount => 1
       }
     end
     let(:params) do
