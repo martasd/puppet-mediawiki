@@ -42,14 +42,14 @@ describe 'mediawiki::instance', :type => :define do
         'ensure'   => 'directory',
         'owner'    => 'root',
         'group'    => 'root',
-        'mode'     => '0755',
+        'mode'     => '0755'
       )
       
      should contain_file('/etc/mediawiki/dummy_instance/images').with(
         'ensure'   => 'directory',
         'owner'    => 'root',
         'group'    => 'www-data',
-        'mode'     => '0755',
+        'mode'     => '0755'
       )
       
       should contain_mediawiki__symlinks('dummy_instance').with(
@@ -85,13 +85,13 @@ describe 'mediawiki::instance', :type => :define do
                           'thumb.php',
                           'thumb.php5',
                           'wiki.phtml'],
-       'target_dir'    => '/var/www/mediawiki-1.19.1',
+       'target_dir'    => '/var/www/mediawiki-1.19.1'
        )
       
       should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'link',
         'owner'    => 'root',
-        'group'    => 'root',
+        'group'    => 'root'
       )
 
       should contain_apache__vhost('dummy_instance').with(
@@ -99,7 +99,7 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'apache/vhost-default.conf.erb',
-        'ensure'       => 'present',
+        'ensure'       => 'present'
       )
     end
   end
@@ -141,14 +141,14 @@ describe 'mediawiki::instance', :type => :define do
         'ensure'   => 'directory',
         'owner'    => 'root',
         'group'    => 'root',
-        'mode'     => '0755',
+        'mode'     => '0755'
       )
      
       should contain_file('/etc/mediawiki/dummy_instance/images').with(
         'ensure'   => 'directory',
         'owner'    => 'root',
         'group'    => 'www-data',
-        'mode'     => '0755',
+        'mode'     => '0755'
       )
       
       should contain_mediawiki__symlinks('dummy_instance').with(
@@ -184,13 +184,13 @@ describe 'mediawiki::instance', :type => :define do
                           'thumb.php',
                           'thumb.php5',
                           'wiki.phtml'],
-       'target_dir'    => '/var/www/mediawiki-1.19.1',
+       'target_dir'    => '/var/www/mediawiki-1.19.1'
        )
        
       should contain_file('/var/www/wikis/dummy_instance').with(
         'ensure'   => 'link',
         'owner'    => 'root',
-        'group'    => 'root',
+        'group'    => 'root'
       )
       
       
@@ -199,7 +199,7 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'apache/vhost-default.conf.erb',
-        'ensure'       => 'absent',
+        'ensure'       => 'absent'
       ) 
     end
     
@@ -211,16 +211,16 @@ describe 'mediawiki::instance', :type => :define do
       should contain_mysql__db('dummy_db').with(
         'user'     => 'dummy_user',
         'password' => 'super_long_password',
-        'host'     => 'localhost',
+        'host'     => 'localhost'
       ) 
       
       should contain_file('/etc/mediawiki/dummy_instance').with( 
-        'ensure'   => 'absent',
+        'ensure'   => 'absent'
       )
      
       
       should contain_file('/var/www/wikis/dummy_instance').with(
-        'ensure'   => 'absent',
+        'ensure'   => 'absent'
       )
       
       should contain_mysql__db('dummy_db').with(
@@ -228,7 +228,7 @@ describe 'mediawiki::instance', :type => :define do
         'password' => 'super_long_password',
         'host'     => 'localhost',
         'grant'    => 'all',
-        'ensure'   => 'absent',
+        'ensure'   => 'absent'
       )  
       
       should contain_apache__vhost('dummy_instance').with(
@@ -236,7 +236,7 @@ describe 'mediawiki::instance', :type => :define do
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
         'template'     => 'apache/vhost-default.conf.erb',
-        'ensure'       => 'absent',
+        'ensure'       => 'absent'
       ) 
     end
   end

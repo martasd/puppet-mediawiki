@@ -34,8 +34,7 @@ describe 'mediawiki', :type => :class do
         'path'    => '/etc/mediawiki',
         'owner'   => 'root',
         'group'   => 'root',
-        'mode'    => '0755',
-        'require' => '[Package[php5]{:name=>"php5"}, Package[php5-mysql]{:name=>"php5-mysql"}, Package[wget]{:name=>"wget"}]'
+        'mode'    => '0755'
       )
     }
   end
@@ -75,7 +74,7 @@ describe 'mediawiki', :type => :class do
         'path'    => '/etc/mediawiki',
         'owner'   => 'root',
         'group'   => 'root',
-        'mode'    => '0755',
+        'mode'    => '0755'
       )
     }
   end
