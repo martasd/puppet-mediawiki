@@ -43,7 +43,7 @@ define mediawiki::instance (
   $ensure  = 'present'
   ) {
   
-  validate_re($ensure, [ '^present$', '^absent$', '^deleted$' ],
+  validate_re($ensure, '^(present|absent|deleted)$',
   "${ensure} is not supported for ensure.
   Allowed values are 'present', 'absent', and 'deleted'.")
 
