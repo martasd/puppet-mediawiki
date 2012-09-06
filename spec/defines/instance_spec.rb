@@ -122,9 +122,13 @@ describe 'mediawiki::instance', :type => :define do
     
     let(:params) do
       {
-        :db_password => 'super_long_password',
-        :db_name     => 'dummy_db',
-        :db_user     => 'dummy_user',
+        :db_password    => 'super_long_password',
+        :db_name        => 'dummy_db',
+        :db_user        => 'dummy_user',
+        :ip             => '192.168.100.41',
+        :port           => '80',
+        :server_aliases => 'wiki1instance',
+
       }
     end
     
@@ -198,6 +202,9 @@ describe 'mediawiki::instance', :type => :define do
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
+        'servername'    => 'www.example.com',
+        'vhost_name'    => '192.168.100.41',
+        'serveraliases' => 'wiki1instance',
         'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'absent'
       ) 
@@ -234,8 +241,6 @@ describe 'mediawiki::instance', :type => :define do
       should contain_apache__vhost('dummy_instance').with(
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
-        'serveradmin'  => 'admin@puppetlabs.com',
-        'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'absent'
       ) 
     end

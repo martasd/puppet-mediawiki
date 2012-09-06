@@ -4,12 +4,14 @@
 #
 # === Parameters
 #
-# [*db_name*]     - name of the mediawiki instance mysql database
-# [*db_user*]     - name of the mysql database user
-# [*db_password*] - password for the mysql database user
-# [*port*]        - port on mediawiki web server
-# [*ensure*]      - the current status of the wiki instance
-#                 - options: present, absent, deleted
+# [*db_name*]        - name of the mediawiki instance mysql database
+# [*db_user*]        - name of the mysql database user
+# [*db_password*]    - password for the mysql database user
+# [*ip*]             - ip address of the mediawiki web server
+# [*port*]           - port on mediawiki web server
+# [*server_aliases*] - an array of mediawiki web server aliases
+# [*ensure*]         - the current status of the wiki instance
+#                    - options: present, absent, deleted
 #
 # === Examples
 #
@@ -37,10 +39,12 @@
 #
 define mediawiki::instance (
   $db_password,
-  $db_name = $name,
-  $db_user = "${name}_user",
-  $port    = '80',
-  $ensure  = 'present'
+  $db_name        = $name,
+  $db_user        = "${name}_user",
+  $ip             = '*',
+  $port           = '80',
+  $server_aliases = '',
+  $ensure         = 'present'
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -126,11 +130,13 @@ define mediawiki::instance (
      
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
-        port         => $port,
-        docroot      => $doc_root,
-        serveradmin  => $admin_email,
-        servername   => $server_name,
-        ensure       => $ensure,
+        port          => $port,
+        docroot       => $doc_root,
+        serveradmin   => $admin_email,
+        servername    => $server_name,
+        vhost_name    => $ip,
+        serveraliases => $server_aliases,
+        ensure        => $ensure,
       }
     }
     'deleted': {
@@ -158,12 +164,10 @@ define mediawiki::instance (
       }
 
       apache::vhost { $name:
-        port         => $port,
-        docroot      => $doc_root,
-        serveradmin  => $admin_email,
-        servername   => $server_name,
-        ensure       => 'absent',
-      }
+        port          => $port,
+        docroot       => $doc_root,
+        ensure        => 'absent',
+      } 
     }
   }
 }
