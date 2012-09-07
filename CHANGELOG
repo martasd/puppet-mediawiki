@@ -1,14 +1,14 @@
 2012-09-07 Release 0.3.0
 
 Changes:
-- Switched from installing from distro package to installing from source.
-- Added support for CentOS.
-- Added support for memcached.
-- Switched to using vhost template provided by puppetlabs/apache.
+- Switch to installing from a tarball instead of a package
+- Add support for CentOS
+- Add support for memcached
+- Switch to using vhost template provided by puppetlabs/apache
 
 Bugfixes:
-- Resolved resource depndency issues.
-- Adjusted syntax for backwards compatibility with Puppet 2.6
+- Resolve resource dependency issues
+- Adjust syntax for backwards compatibility with Puppet 2.6
 
 f8ae191 Incremented the minor version number.
 3d9b8bb Updated dependencies in Modulefile.
