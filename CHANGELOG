@@ -1,0 +1,32 @@
+2012-09-07 Release 0.3.0
+
+Changes:
+- Switched from installing from distro package to installing from source.
+- Added support for CentOS.
+- Added support for memcached.
+- Switched to using vhost template provided by puppetlabs/apache.
+
+Bugfixes:
+- Resolved resource depndency issues.
+- Adjusted syntax for backwards compatibility with Puppet 2.6
+
+f8ae191 Incremented the minor version number.
+3d9b8bb Updated dependencies in Modulefile.
+442efa1 Removed unnecessary attributes from vhost when deleted.
+ecd2fc8 Merge pull request #2 from branan/fix_re_for_older_puppet
+95864ff Fix regular expression validation to work with puppet 2.6
+1d8785d Removed a trailing comma of last param in class definition.
+50f3af4 Merge pull request #1 from branan/test_cleanup
+9cedbdb Cleanup tests
+51547b4 Turned on memcached support.
+adf5cd0 Switched to using apache's vhost template instead of custom one.
+9491a91 Corrected recursive purging of wiki directory when user deletes wiki instance.
+09637dc Converted a ruby function into a regular expression.
+4871b42 Fixed spec tests for mediawiki::symlinks.
+768c06f Fixed regex for recognizing operatingsystem var.
+420aa3a Added CentOS specific configuration.
+70a1df2 Fixed the wiki site name.
+4c3e8fe Switched from installing MediaWiki from a package to installing from a tar file.
+c9bfbb9 Factored out common code in params.pp.
+81695a1 Resolved resource dependency problems.
+
