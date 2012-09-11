@@ -87,6 +87,7 @@ define mediawiki::instance (
                         --confpath ${mediawiki_conf_dir}/${name}  \
                         --lang en",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
+        logoutput   => true,
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
 
