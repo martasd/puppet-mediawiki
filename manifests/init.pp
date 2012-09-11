@@ -45,7 +45,8 @@ class mediawiki (
   $doc_root       = $mediawiki::params::doc_root,
   $tarball_url    = $mediawiki::params::tarball_url,
   $package_ensure = 'latest',
-  $max_memory     = '2048'
+  $max_memory     = '2048',
+  $instances      = false
   ) inherits mediawiki::params {
 
   $web_dir = $mediawiki::params::web_dir
@@ -103,3 +104,11 @@ class mediawiki (
     max_connections => '1024',
   }
 } 
+
+  Exec['unpack-mediawiki'] -> Mediawiki::Instance <||>
+
+  if($instances) {
+    create_resources('mediawiki::instance', $instances)
+  }
+
+}

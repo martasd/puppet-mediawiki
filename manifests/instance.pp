@@ -55,9 +55,6 @@ define mediawiki::instance (
 
   include mediawiki::params
 
-  # MediaWiki needs to be installed before a particular instance is created
-  Class['mediawiki'] -> Mediawiki::Instance[$name]
-
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
   $db_root_password        = $mediawiki::db_root_password
