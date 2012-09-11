@@ -7,6 +7,7 @@
 # [*db_name*]        - name of the mediawiki instance mysql database
 # [*db_user*]        - name of the mysql database user
 # [*db_password*]    - password for the mysql database user
+# [*db_server*]      - address where db resides. Optional. Defaults to localhost.
 # [*ip*]             - ip address of the mediawiki web server
 # [*port*]           - port on mediawiki web server
 # [*server_aliases*] - an array of mediawiki web server aliases
@@ -41,6 +42,7 @@ define mediawiki::instance (
   $db_password,
   $db_name        = $name,
   $db_user        = "${name}_user",
+  $db_server      = 'localhost',
   $ip             = '*',
   $port           = '80',
   $server_aliases = '',
@@ -79,7 +81,7 @@ define mediawiki::instance (
                         --server http://${server_name}            \
                         --scriptpath /${name}                     \
                         --dbtype mysql                            \
-                        --dbserver localhost                      \
+                        --dbserver ${db_server}                   \
                         --installdbuser root                      \
                         --installdbpass ${db_root_password}       \
                         --dbname ${db_name}                       \

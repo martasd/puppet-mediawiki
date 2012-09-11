@@ -101,6 +101,9 @@ describe 'mediawiki::instance', :type => :define do
         'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'present'
       )
+
+      should contain_exec('dummy_instance-install_script').with_command(/--dbserver localhost/)
+
     end
   end
   
@@ -125,6 +128,7 @@ describe 'mediawiki::instance', :type => :define do
         :db_password    => 'super_long_password',
         :db_name        => 'dummy_db',
         :db_user        => 'dummy_user',
+        :db_server      => 'dummy_db',
         :ip             => '192.168.100.41',
         :port           => '80',
         :server_aliases => 'wiki1instance',
@@ -208,6 +212,9 @@ describe 'mediawiki::instance', :type => :define do
         'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'absent'
       ) 
+
+      should contain_exec('dummy_instance-install_script').with_command(/--dbserver dummy_db/)
+
     end
     
     it 'should have deleted the instance' do

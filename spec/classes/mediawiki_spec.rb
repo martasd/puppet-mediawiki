@@ -79,6 +79,28 @@ describe 'mediawiki', :type => :class do
     }
   end
 
+  context 'using default parameters on Debian' do
+    let(:facts) do
+      {
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian',
+        :processorcount => 1
+      }
+    end
+
+    let(:params) do
+      {
+        :install_db       => false,
+        :server_name      => 'www.example.com',
+        :admin_email      => 'admin@puppetlabs.com',
+        :db_root_password => 'long_password'
+      }
+    end
+
+    it { should_not contain_class('mysql::server') }
+
+  end
+
   # Implement additional contexts for different Ubuntu, CentOS, and RedHat.
   context 'using default parameters on Ubuntu' do
     let(:facts) do
