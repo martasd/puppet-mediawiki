@@ -79,6 +79,58 @@ describe 'mediawiki', :type => :class do
     }
   end
 
+  context 'not installing the database' do
+    let(:facts) do
+      {
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian',
+        :processorcount => 1
+      }
+    end
+
+    let(:params) do
+      {
+        :install_db       => false,
+        :server_name      => 'www.example.com',
+        :admin_email      => 'admin@puppetlabs.com',
+        :db_root_password => 'long_password'
+      }
+    end
+
+    it { should_not contain_class('mysql::server') }
+
+  end
+
+  context 'specifying instances' do
+    let(:facts) do
+      {
+        :osfamily => 'Debian',
+        :operatingsystem => 'Debian',
+        :processorcount => 1
+      }
+    end
+
+    let(:params) do
+      {
+        :server_name      => 'www.example.com',
+        :admin_email      => 'admin@puppetlabs.com',
+        :db_root_password => 'long_password',
+        :instances        => {
+          'dans_wiki' =>
+            { 'db_password'        => 'db_pw',
+              'db_server'          => 'foo'
+            }
+        }
+      }
+    end
+
+    it { should contain_mediawiki__instance('dans_wiki').with(
+      :db_password      => 'db_pw',
+      :db_server        => 'foo'
+    ) }
+
+  end
+
   # Implement additional contexts for different Ubuntu, CentOS, and RedHat.
   context 'using default parameters on Ubuntu' do
     let(:facts) do
