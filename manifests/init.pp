@@ -13,6 +13,7 @@
 # [*tarball_url*]      - the url to fetch the mediawiki tar archive
 # [*package_ensure*]   - state of the package
 # [*max_memory*]       - a memcached memory limit
+# [*default_vhost*]    - configure a default Apache vhost
 #
 # === Examples
 #
@@ -43,7 +44,8 @@ class mediawiki (
   $doc_root       = $mediawiki::params::doc_root,
   $tarball_url    = $mediawiki::params::tarball_url,
   $package_ensure = 'latest',
-  $max_memory     = '2048'
+  $max_memory     = '2048',
+  $default_vhost  = $mediawiki::params::default_vhost
   ) inherits mediawiki::params {
 
   $web_dir = $mediawiki::params::web_dir
@@ -53,15 +55,17 @@ class mediawiki (
   $tarball_name             = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+.*tar\.gz)$', '\1')
   $mediawiki_dir            = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $mediawiki_install_path   = "${web_dir}/${mediawiki_dir}"
-  
+
   # Specify dependencies
   Class['mysql::server'] -> Class['mediawiki']
   Class['mysql::config'] -> Class['mediawiki']
-  
-  class { 'apache': }
+
+  class { 'apache':
+    default_vhost => $default_vhost,
+  }
   class { 'apache::mod::php': }
-  
-  
+
+
   # Manages the mysql server package and service by default
   class { 'mysql::server':
     config_hash => { 'root_password' => $db_root_password },
@@ -79,25 +83,23 @@ class mediawiki (
     group   => 'root',
     mode    => '0755',
     require => Package[$mediawiki::params::packages],
-  }  
-  
+  }
+
   # Download and install MediaWiki from a tarball
   exec { "get-mediawiki":
-    cwd       => $web_dir,
-    command   => "/usr/bin/wget ${tarball_url}",
+    command   => "/bin/bash -c 'pushd ${web_dir} && /usr/bin/wget ${tarball_url} && popd'",
     creates   => "${web_dir}/${tarball_name}",
     subscribe => File['mediawiki_conf_dir'],
   }
-    
+
   exec { "unpack-mediawiki":
-    cwd       => $web_dir,
-    command   => "/bin/tar -xvzf ${tarball_name}",
+    command   => "/bin/bash -c 'pushd ${web_dir} && /bin/tar -xvzf ${tarball_name} && popd'",
     creates   => $mediawiki_install_path,
     subscribe => Exec['get-mediawiki'],
   }
-  
+
   class { 'memcached':
     max_memory => $max_memory,
     max_connections => '1024',
   }
-} 
+}
