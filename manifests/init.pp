@@ -39,9 +39,12 @@
 class mediawiki (
   $server_name,
   $admin_email,
+  $db_root_user   = $mediawiki::params::db_root_user,
   $db_root_password,
+  $db_server      = $mediawiki::params::db_server,
   $doc_root       = $mediawiki::params::doc_root,
   $tarball_url    = $mediawiki::params::tarball_url,
+  $packages       = $mediawiki::params::packages,
   $package_ensure = 'latest',
   $max_memory     = '2048'
   ) inherits mediawiki::params {
@@ -53,34 +56,45 @@ class mediawiki (
   $tarball_name             = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+.*tar\.gz)$', '\1')
   $mediawiki_dir            = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $mediawiki_install_path   = "${web_dir}/${mediawiki_dir}"
-  
-  # Specify dependencies
-  Class['mysql::server'] -> Class['mediawiki']
-  Class['mysql::config'] -> Class['mediawiki']
-  
+
   class { 'apache': }
   class { 'apache::mod::php': }
-  
-  
-  # Manages the mysql server package and service by default
-  class { 'mysql::server':
-    config_hash => { 'root_password' => $db_root_password },
+
+
+  case $mediawiki::db_server {
+    'localhost': {
+      # Manage the mysql server package and service by default
+      class { 'mysql::server':
+        config_hash => { 'root_password' => $db_root_password },
+      }
+
+      # Specify dependencies
+      Class['mysql::server'] -> Class['mediawiki']
+      Class['mysql::config'] -> Class['mediawiki']
+    }
+    default: {
+      # Install the mysql client
+      class { 'mysql': }
+
+      # Specify dependencies
+      Class['mysql'] -> Class['mediawiki']
+    }
   }
 
-  package { $mediawiki::params::packages:
+  package { $mediawiki::packages:
     ensure  => $package_ensure,
   }
 
   # Make sure the directories and files common for all instances are included
   file { 'mediawiki_conf_dir':
     ensure  => 'directory',
-    path    => $mediawiki::params::conf_dir,
+    path    => $mediawiki::conf_dir,
     owner   => 'root',
     group   => 'root',
     mode    => '0755',
-    require => Package[$mediawiki::params::packages],
-  }  
-  
+    require => Package[$mediawiki::packages],
+  }
+
   # Download and install MediaWiki from a tarball
   exec { "get-mediawiki":
     cwd       => $web_dir,
@@ -88,16 +102,16 @@ class mediawiki (
     creates   => "${web_dir}/${tarball_name}",
     subscribe => File['mediawiki_conf_dir'],
   }
-    
+
   exec { "unpack-mediawiki":
     cwd       => $web_dir,
     command   => "/bin/tar -xvzf ${tarball_name}",
     creates   => $mediawiki_install_path,
     subscribe => Exec['get-mediawiki'],
   }
-  
+
   class { 'memcached':
     max_memory => $max_memory,
     max_connections => '1024',
   }
-} 
+}

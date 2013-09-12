@@ -39,6 +39,7 @@
 #
 define mediawiki::instance (
   $db_password,
+  $db_server      = 'localhost',
   $db_name        = $name,
   $db_user        = "${name}_user",
   $ip             = '*',
@@ -46,7 +47,7 @@ define mediawiki::instance (
   $server_aliases = '',
   $ensure         = 'present'
   ) {
-  
+
   validate_re($ensure, '^(present|absent|deleted)$',
   "${ensure} is not supported for ensure.
   Allowed values are 'present', 'absent', and 'deleted'.")
@@ -58,6 +59,7 @@ define mediawiki::instance (
 
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
+  $db_root_user            = $mediawiki::db_root_user
   $db_root_password        = $mediawiki::db_root_password
   $server_name             = $mediawiki::server_name
   $doc_root                = $mediawiki::doc_root
@@ -70,7 +72,7 @@ define mediawiki::instance (
   # mysql_secure_installation)
   case $ensure {
     'present', 'absent': {
-      
+
       exec { "${name}-install_script":
         cwd         => "${mediawiki_install_path}/maintenance",
         command     => "/usr/bin/php install.php ${name} admin    \
@@ -79,8 +81,8 @@ define mediawiki::instance (
                         --server http://${server_name}            \
                         --scriptpath /${name}                     \
                         --dbtype mysql                            \
-                        --dbserver localhost                      \
-                        --installdbuser root                      \
+                        --dbserver ${db_server}                   \
+                        --installdbuser ${db_root_user}           \
                         --installdbpass ${db_root_password}       \
                         --dbname ${db_name}                       \
                         --dbuser ${db_user}                       \
@@ -98,7 +100,7 @@ define mediawiki::instance (
         group  => 'root',
         mode   => '0755',
       }
-        
+
       # MediaWiki instance directory
       file { "${mediawiki_conf_dir}/${name}":
         ensure   => directory,
@@ -113,7 +115,7 @@ define mediawiki::instance (
           default               => undef,
         }
       }
-      
+
       # Ensure that mediawiki configuration files are included in each instance.
       mediawiki::symlinks { $name:
         conf_dir      => $mediawiki_conf_dir,
@@ -127,7 +129,7 @@ define mediawiki::instance (
         target   => "${mediawiki_conf_dir}/${name}",
         require  => File["${mediawiki_conf_dir}/${name}"],
       }
-     
+
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
         port          => $port,
@@ -140,7 +142,7 @@ define mediawiki::instance (
       }
     }
     'deleted': {
-      
+
       # Remove the MediaWiki instance directory if it is present
       file { "${mediawiki_conf_dir}/${name}":
         ensure  => absent,
@@ -158,7 +160,7 @@ define mediawiki::instance (
       mysql::db { $db_name:
         user     => $db_user,
         password => $db_password,
-        host     => 'localhost',
+        host     => $db_server,
         grant    => ['all'],
         ensure   => 'absent',
       }
@@ -167,7 +169,7 @@ define mediawiki::instance (
         port          => $port,
         docroot       => $doc_root,
         ensure        => 'absent',
-      } 
+      }
     }
   }
 }

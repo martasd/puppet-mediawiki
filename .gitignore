@@ -4,3 +4,6 @@
 
 # Do not include vim's swap files
 *.swp
+
+# Do not include release packages
+pkg/
