@@ -58,7 +58,9 @@ class mediawiki (
   Class['mysql::server'] -> Class['mediawiki']
   Class['mysql::config'] -> Class['mediawiki']
   
-  class { 'apache': }
+  class { 'apache':
+    mpm_module => 'prefork',
+  }
   class { 'apache::mod::php': }
   
   
