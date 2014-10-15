@@ -100,7 +100,6 @@ describe 'mediawiki::instance', :type => :define do
         'port'         => '80',
         'docroot'      => '/var/www/wikis',
         'serveradmin'  => 'admin@puppetlabs.com',
-        'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'present'
       )
     end
@@ -209,7 +208,6 @@ describe 'mediawiki::instance', :type => :define do
         'servername'    => 'www.example.com',
         'vhost_name'    => '192.168.100.41',
         'serveraliases' => 'wiki1instance',
-        'template'     => 'apache/vhost-default.conf.erb',
         'ensure'       => 'absent'
       ) 
     end
