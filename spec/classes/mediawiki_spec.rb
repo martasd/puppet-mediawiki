@@ -9,6 +9,7 @@ describe 'mediawiki', :type => :class do
         :osfamily => 'Debian',
         :operatingsystem => 'Debian',
         :operatingsystemrelease => '7.0',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
@@ -45,6 +46,7 @@ describe 'mediawiki', :type => :class do
         :osfamily => 'Debian',
         :operatingsystem => 'Debian',
         :operatingsystemrelease => '7.0',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
@@ -86,6 +88,7 @@ describe 'mediawiki', :type => :class do
         :osfamily => 'Debian',
         :operatingsystem => 'Ubuntu',
         :operatingsystemrelease => '14.04',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
@@ -104,6 +107,7 @@ describe 'mediawiki', :type => :class do
         :osfamily => 'RedHat',
         :operatingsystem => 'RedHat',
         :operatingsystemrelease => '7.0',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
