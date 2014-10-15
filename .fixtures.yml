@@ -1,9 +1,10 @@
 fixtures:
-  repositories:
-    apache: git://github.com/puppetlabs/puppetlabs-apache.git
-    mysql: git://github.com/puppetlabs/puppetlabs-mysql.git
-    memcached: git://github.com/saz/puppet-memcached.git
-    stdlib: git://github.com/puppetlabs/puppetlabs-stdlib.git
-    firewall: git://github.com/puppetlabs/puppetlabs-firewall.git 
+  forge_modules:
+    apache: "puppetlabs/apache"
+    mysql: "puppetlabs/mysql"
+    memcached: "saz/memcached"
+    stdlib: "puppetlabs/stdlib"
+    firewall: "puppetlabs/firewall"
+    concat: "puppetlabs/concat"
   symlinks:
     mediawiki: "#{source_dir}"
