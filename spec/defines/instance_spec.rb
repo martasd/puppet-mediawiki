@@ -21,6 +21,7 @@ describe 'mediawiki::instance', :type => :define do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Debian',
+        :operatingsystemrelease => '7.0',
         :processorcount => 1
       }
     end
@@ -116,6 +117,7 @@ describe 'mediawiki::instance', :type => :define do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Debian',
+        :operatingsystemrelease => '7.0',
         :processorcount => 1
       }
     end
@@ -260,6 +262,7 @@ describe 'mediawiki::instance', :type => :define do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Ubuntu',
+        :operatingsystemrelease => '14.04',
         :processorcount => 1
       }
     end
@@ -282,6 +285,7 @@ describe 'mediawiki::instance', :type => :define do
     let(:facts) do
       {
         :operatingsystem => 'RedHat',
+        :operatingsystemrelease => '7.0',
         :processorcount => 1
       }
     end
