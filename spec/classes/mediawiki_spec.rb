@@ -8,6 +8,8 @@ describe 'mediawiki', :type => :class do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Debian',
+        :operatingsystemrelease => '7.0',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
@@ -27,7 +29,6 @@ describe 'mediawiki', :type => :class do
       should contain_class('mediawiki::params')
       should contain_package('php5').with('ensure' => 'latest')
       should contain_package('php5-mysql').with('ensure'=> 'latest')
-      should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
       should contain_class('memcached').with('max_memory' => '2048')
       should contain_file('mediawiki_conf_dir').with(
         'ensure'  => 'directory',
@@ -44,6 +45,8 @@ describe 'mediawiki', :type => :class do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Debian',
+        :operatingsystemrelease => '7.0',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
@@ -67,7 +70,6 @@ describe 'mediawiki', :type => :class do
       should contain_class('mediawiki::params')
       should contain_package('php5').with('ensure' => 'installed')
       should contain_package('php5-mysql').with('ensure' => 'installed')
-      should contain_class('mysql::server').with('config_hash' => {'root_password' => 'long_password'})
       should contain_class('memcached').with('max_memory' => '1024')
       should contain_file('mediawiki_conf_dir').with(
         'ensure'  => 'directory',
@@ -85,6 +87,8 @@ describe 'mediawiki', :type => :class do
       {
         :osfamily => 'Debian',
         :operatingsystem => 'Ubuntu',
+        :operatingsystemrelease => '14.04',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end
@@ -102,6 +106,8 @@ describe 'mediawiki', :type => :class do
       {
         :osfamily => 'RedHat',
         :operatingsystem => 'RedHat',
+        :operatingsystemrelease => '7.0',
+        :concat_basedir => '/tmp/concat',
         :processorcount => 1
       }
     end

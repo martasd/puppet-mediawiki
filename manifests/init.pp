@@ -4,6 +4,10 @@
 # that needs to be performed exactly once and is therefore not mediawiki
 # instance specific.
 #
+# This class requires configuring a local mysql server. The mediawiki::instance
+# define will then use the db_root_password to create individual databases for
+# each instance.
+#
 # === Parameters
 #
 # [*server_name*]      - the host name of the server
@@ -53,20 +57,10 @@ class mediawiki (
   $tarball_name             = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+.*tar\.gz)$', '\1')
   $mediawiki_dir            = regsubst($tarball_url, '^.*?/(mediawiki-\d\.\d+\.\d+).*$', '\1')
   $mediawiki_install_path   = "${web_dir}/${mediawiki_dir}"
-  
-  # Specify dependencies
-  Class['mysql::server'] -> Class['mediawiki']
-  Class['mysql::config'] -> Class['mediawiki']
-  
-  class { 'apache': }
+
+  class { 'apache':  mpm_module => 'prefork'; }
   class { 'apache::mod::php': }
   
-  
-  # Manages the mysql server package and service by default
-  class { 'mysql::server':
-    config_hash => { 'root_password' => $db_root_password },
-  }
-
   package { $mediawiki::params::packages:
     ensure  => $package_ensure,
   }

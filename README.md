@@ -1,5 +1,7 @@
 # MediaWiki module for Puppet
 
+[![Build Status](https://travis-ci.org/martasd/puppet-mediawiki.svg?branch=master)](https://travis-ci.org/martasd/puppet-mediawiki)
+
 ## Description
 
 This module deploys and manages multiple MediaWiki instances using a single MediaWiki installation. This module has been designed and tested for CentOS 6, Red Hat Enterprise Linux 6, Debian Squeeze, Debian Wheezy, and Ubuntu Precise.
