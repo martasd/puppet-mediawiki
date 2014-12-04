@@ -56,8 +56,7 @@ class mediawiki (
   
   # Specify dependencies
   Class['mysql::server'] -> Class['mediawiki']
-  Class['mysql::config'] -> Class['mediawiki']
-  
+
   ensure_resource('class', 'apache')
   ensure_resource('class', 'apache::mod::php')
   
