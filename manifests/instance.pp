@@ -16,6 +16,8 @@
 #                      host or its path
 #                    - options: host, path
 # [*server_name*]    - Unique server name to use for host-based wikis
+# [*admin_name*]     - name of the wiki's administrator (admin by default)
+# [*admin_password*] - password for the wiki's administrator (puppet by default)
 #
 # === Examples
 #
@@ -51,6 +53,8 @@ define mediawiki::instance (
   $ensure         = 'present',
   $vhost_type     = 'path',
   $server_name    = $mediawiki::server_name,
+  $admin_name     = 'admin',
+  $admin_password = 'puppet',
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -90,8 +94,9 @@ define mediawiki::instance (
       
       exec { "${name}-install_script":
         cwd         => "${mediawiki_install_path}/maintenance",
-        command     => "/usr/bin/php install.php ${name} admin    \
-                        --pass puppet                             \
+        command     => "/usr/bin/php install.php ${name}          \
+	                ${admin_name}                             \
+                        --pass ${admin_password}                  \
                         --email ${admin_email}                    \
                         --server http://${server_name}            \
                         --scriptpath ${script_path}               \
