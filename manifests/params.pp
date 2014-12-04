@@ -21,7 +21,7 @@
 #
 class mediawiki::params {
 
-  $tarball_url        = 'http://download.wikimedia.org/mediawiki/1.19/mediawiki-1.19.1.tar.gz'
+  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.24/mediawiki-1.24.0.tar.gz'
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
