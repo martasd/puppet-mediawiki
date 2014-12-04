@@ -12,6 +12,10 @@
 # [*server_aliases*] - an array of mediawiki web server aliases
 # [*ensure*]         - the current status of the wiki instance
 #                    - options: present, absent, deleted
+# [*vhost_type*]     - Whether the wiki will be defined by the name of the
+#                      host or its path
+#                    - options: host, path
+# [*server_name*]    - Unique server name to use for host-based wikis
 #
 # === Examples
 #
@@ -44,7 +48,9 @@ define mediawiki::instance (
   $ip             = '*',
   $port           = '80',
   $server_aliases = '',
-  $ensure         = 'present'
+  $ensure         = 'present',
+  $vhost_type     = 'path',
+  $server_name    = $mediawiki::server_name,
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -59,12 +65,23 @@ define mediawiki::instance (
   # Make the configuration file more readable
   $admin_email             = $mediawiki::admin_email
   $db_root_password        = $mediawiki::db_root_password
-  $server_name             = $mediawiki::server_name
   $doc_root                = $mediawiki::doc_root
   $mediawiki_install_path  = $mediawiki::mediawiki_install_path
   $mediawiki_conf_dir      = $mediawiki::params::conf_dir
   $mediawiki_install_files = $mediawiki::params::installation_files
   $apache_daemon           = $mediawiki::params::apache_daemon
+
+  # Configure according to whether the wiki instance will be accessed
+  # through a unique host name or through a unique path
+  $vhost_root = $vhost_type ? {
+    'path' => $doc_root,
+    'host' => "$doc_root/$name",
+  }
+
+  $script_path = $vhost_type ? {
+    'path' => "/${name}",
+    'host' => "''",
+  }
 
   # Figure out how to improve db security (manually done by
   # mysql_secure_installation)
@@ -77,7 +94,7 @@ define mediawiki::instance (
                         --pass puppet                             \
                         --email ${admin_email}                    \
                         --server http://${server_name}            \
-                        --scriptpath /${name}                     \
+                        --scriptpath ${script_path}               \
                         --dbtype mysql                            \
                         --dbserver localhost                      \
                         --installdbuser root                      \
@@ -131,7 +148,7 @@ define mediawiki::instance (
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
         port          => $port,
-        docroot       => $doc_root,
+        docroot       => $vhost_root,
         serveradmin   => $admin_email,
         servername    => $server_name,
         vhost_name    => $ip,
@@ -165,7 +182,7 @@ define mediawiki::instance (
 
       apache::vhost { $name:
         port          => $port,
-        docroot       => $doc_root,
+        docroot       => $vhost_root,
         ensure        => 'absent',
       } 
     }
