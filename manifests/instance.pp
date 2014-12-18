@@ -57,6 +57,7 @@ define mediawiki::instance (
   $admin_name     = 'admin',
   $admin_password = 'puppet',
   $language       = 'en',
+  $images_dir     = '',
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -129,15 +130,25 @@ define mediawiki::instance (
       }
 
       # Each instance needs a separate folder to upload images
-      file { "${mediawiki_conf_dir}/${name}/images":
-        ensure   => directory,
-        group => $::operatingsystem ? {
+      $images_group = $::operatingsystem ? {
           /(?i)(redhat|centos)/ => 'apache',
           /(?i)(debian|ubuntu)/ => 'www-data',
           default               => undef,
-        }
       }
-      
+
+      if $images_dir == '' {
+	file { "${mediawiki_conf_dir}/${name}/images":
+	  ensure   => directory,
+	  group => $images_group
+	}
+      } else {
+	file { "${mediawiki_conf_dir}/${name}/images":
+	  ensure => link,
+	  target => $images_dir,
+	  group  => $images_group
+	}
+      }
+
       # Ensure that mediawiki configuration files are included in each instance.
       mediawiki::symlinks { $name:
         conf_dir      => $mediawiki_conf_dir,
