@@ -18,6 +18,7 @@
 # [*server_name*]    - Unique server name to use for host-based wikis
 # [*admin_name*]     - name of the wiki's administrator (admin by default)
 # [*admin_password*] - password for the wiki's administrator (puppet by default)
+# [*language*]       - language to be used for the wiki
 #
 # === Examples
 #
@@ -55,6 +56,7 @@ define mediawiki::instance (
   $server_name    = $mediawiki::server_name,
   $admin_name     = 'admin',
   $admin_password = 'puppet',
+  $language       = 'en',
   ) {
   
   validate_re($ensure, '^(present|absent|deleted)$',
@@ -108,7 +110,7 @@ define mediawiki::instance (
                         --dbuser ${db_user}                       \
                         --dbpass ${db_password}                   \
                         --confpath ${mediawiki_conf_dir}/${name}  \
-                        --lang en",
+                        --lang ${language}",
         creates     => "${mediawiki_conf_dir}/${name}/LocalSettings.php",
         subscribe   => File["${mediawiki_conf_dir}/${name}/images"],
       }
