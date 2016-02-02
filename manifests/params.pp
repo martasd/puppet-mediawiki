@@ -21,19 +21,22 @@
 #
 class mediawiki::params {
 
-  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.24/mediawiki-1.24.0.tar.gz'
+  $tarball_url        = 'http://releases.wikimedia.org/mediawiki/1.26/mediawiki-1.26.2.tar.gz'
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
                          'api.php5',
-                         'bin',
+                         'autoload.php',
+			 'composer.json',
                          'docs',
                          'extensions',
+                         'Gruntfile.js',
                          'img_auth.php',
                          'img_auth.php5',
                          'includes',
                          'index.php',
                          'index.php5',
+                         'jsduck.json',
                          'languages',
                          'load.php',
                          'load.php5',
@@ -41,10 +44,10 @@ class mediawiki::params {
                          'mw-config',
                          'opensearch_desc.php',
                          'opensearch_desc.php5',
+                         'phpcs.xml',
                          'profileinfo.php',
-                         'redirect.php',
-                         'redirect.php5',
-                         'redirect.phtml',
+                         'profileinfo.php5',
+                         'Rakefile',
                          'resources',
                          'serialized',
                          'skins',
@@ -54,6 +57,7 @@ class mediawiki::params {
                          'thumb_handler.php5',
                          'thumb.php',
                          'thumb.php5',
+                         'vendor',
                          'wiki.phtml']
   
   case $::operatingsystem {
