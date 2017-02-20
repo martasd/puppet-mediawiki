@@ -49,7 +49,7 @@ define mediawiki::instance (
   $db_name        = $name,
   $db_user        = "${name}_user",
   $ip             = '*',
-  $port           = '80',
+  $port           = '',
   $server_aliases = '',
   $ensure         = 'present',
   $vhost_type     = 'path',
@@ -58,8 +58,22 @@ define mediawiki::instance (
   $admin_password = 'puppet',
   $language       = 'en',
   $images_dir     = '',
+  $ssl		  = false,
+  $ssl_chain	  = '',
+  $ssl_key	  = '',
+  $ssl_cert	  = '',
   ) {
-  
+
+  if $port == '' {
+    if $ssl {
+      $server_port = 443
+    } else {
+      $server_port = 80
+    }
+  } else {
+    $server_port = $port
+  }
+
   validate_re($ensure, '^(present|absent|deleted)$',
   "${ensure} is not supported for ensure.
   Allowed values are 'present', 'absent', and 'deleted'.")
@@ -165,13 +179,17 @@ define mediawiki::instance (
      
       # Each instance has a separate vhost configuration
       apache::vhost { $name:
-        port          => $port,
+        port          => $server_port,
         docroot       => $vhost_root,
         serveradmin   => $admin_email,
         servername    => $server_name,
         vhost_name    => $ip,
         serveraliases => $server_aliases,
         ensure        => $ensure,
+	ssl           => $ssl,
+	ssl_chain     => $ssl_chain,
+	ssl_key       => $ssl_key,
+	ssl_cert      => $ssl_cert,
       }
     }
     'deleted': {
