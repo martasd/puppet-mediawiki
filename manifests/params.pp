@@ -21,8 +21,8 @@
 #
 class mediawiki::params {
 
-  $major              = '1.26'
-  $minor              = '2'
+  $major              = '1.29'
+  $minor              = '1'
   $tarball_url        = "http://releases.wikimedia.org/mediawiki/$major/mediawiki-$major.$minor.tar.gz"
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
@@ -66,17 +66,17 @@ class mediawiki::params {
     redhat, centos:  {
       $web_dir            = '/var/www/html'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php-gd', 'php-mysql', 'wget']
+      $packages           = ['php-gd', 'php-mysql', 'php-xml', 'php-mbstring', 'wget']
     }
     debian:  {
       $web_dir            = '/var/www'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php5', 'php5-mysql', 'wget']
+      $packages           = ['php', 'php-mysql', 'php-xml', 'php-mbstring', 'wget']
     }
     ubuntu:  {
       $web_dir            = '/var/www'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php5', 'php5-mysql', 'wget']
+      $packages           = ['php5', 'php5-mysql', 'php-xml', 'php-mbstring', 'wget']
     }
     default: {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")
