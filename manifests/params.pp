@@ -21,8 +21,8 @@
 #
 class mediawiki::params {
 
-  $major              = '1.29'
-  $minor              = '1'
+  $major              = '1.33'
+  $minor              = '0'
   $tarball_url        = "http://releases.wikimedia.org/mediawiki/$major/mediawiki-$major.$minor.tar.gz"
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
