@@ -62,6 +62,7 @@ define mediawiki::instance (
   $ssl_chain	  = '',
   $ssl_key	  = '',
   $ssl_cert	  = '',
+  $setenv	  = [],
   ) {
 
   if $port == '' {
@@ -190,6 +191,7 @@ define mediawiki::instance (
 	ssl_chain     => $ssl_chain,
 	ssl_key       => $ssl_key,
 	ssl_cert      => $ssl_cert,
+	setenv        => $setenv,
       }
     }
     'deleted': {
