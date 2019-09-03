@@ -21,19 +21,24 @@
 #
 class mediawiki::params {
 
-  $tarball_url        = 'http://download.wikimedia.org/mediawiki/1.19/mediawiki-1.19.1.tar.gz'
+  $major              = '1.33'
+  $minor              = '0'
+  $tarball_url        = "http://releases.wikimedia.org/mediawiki/$major/mediawiki-$major.$minor.tar.gz"
   $conf_dir           = '/etc/mediawiki'
   $apache_daemon      = '/usr/sbin/apache2'
   $installation_files = ['api.php',
                          'api.php5',
-                         'bin',
+                         'autoload.php',
+			 'composer.json',
                          'docs',
                          'extensions',
+                         'Gruntfile.js',
                          'img_auth.php',
                          'img_auth.php5',
                          'includes',
                          'index.php',
                          'index.php5',
+                         'jsduck.json',
                          'languages',
                          'load.php',
                          'load.php5',
@@ -41,10 +46,10 @@ class mediawiki::params {
                          'mw-config',
                          'opensearch_desc.php',
                          'opensearch_desc.php5',
+                         'phpcs.xml',
                          'profileinfo.php',
-                         'redirect.php',
-                         'redirect.php5',
-                         'redirect.phtml',
+                         'profileinfo.php5',
+                         'Rakefile',
                          'resources',
                          'serialized',
                          'skins',
@@ -54,23 +59,24 @@ class mediawiki::params {
                          'thumb_handler.php5',
                          'thumb.php',
                          'thumb.php5',
+                         'vendor',
                          'wiki.phtml']
   
   case $::operatingsystem {
     redhat, centos:  {
       $web_dir            = '/var/www/html'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php-gd', 'php-mysql', 'wget']
+      $packages           = ['php-gd', 'php-mysql', 'php-xml', 'php-mbstring', 'wget']
     }
     debian:  {
       $web_dir            = '/var/www'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php5', 'php5-mysql', 'wget']
+      $packages           = ['php', 'php-mysql', 'php-xml', 'php-mbstring', 'wget']
     }
     ubuntu:  {
       $web_dir            = '/var/www'
       $doc_root           = "${web_dir}/wikis"
-      $packages           = ['php5', 'php5-mysql', 'wget']
+      $packages           = ['php5', 'php5-mysql', 'php-xml', 'php-mbstring', 'wget']
     }
     default: {
       fail("Module ${module_name} is not supported on ${::operatingsystem}")

@@ -56,20 +56,19 @@ class mediawiki (
   
   # Specify dependencies
   Class['mysql::server'] -> Class['mediawiki']
-  Class['mysql::config'] -> Class['mediawiki']
-  
-  class { 'apache': }
-  class { 'apache::mod::php': }
+
+  ensure_resource('class', 'apache')
+  ensure_resource('class', 'apache::mod::php')
   
   
   # Manages the mysql server package and service by default
-  class { 'mysql::server':
-    config_hash => { 'root_password' => $db_root_password },
-  }
+  ensure_resource('class', 'mysql::server',
+    { 'root_password' => $db_root_password },
+  )
 
-  package { $mediawiki::params::packages:
+  ensure_resource('package', $mediawiki::params::packages, {
     ensure  => $package_ensure,
-  }
+  })
 
   # Make sure the directories and files common for all instances are included
   file { 'mediawiki_conf_dir':
